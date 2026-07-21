@@ -6,27 +6,27 @@ import { SectionHeader } from "./chrome.jsx";
 const SERVICES = [
   {
     n: "01",
-    title: "Pre-move survey",
-    body: "Virtual or in-home walkthrough in Kuala Lumpur, Penang, or Johor Bahru. Inventory, customs paperwork, and a fixed quote within 48 hours.",
-    bullets: ["Video or in-home", "48h fixed quote", "Bilingual surveyor"],
+    title: "Consultation & move planning",
+    body: "We begin by understanding your moving requirements, destination, preferred timeline, and shipment size. Based on your needs, we'll recommend the most suitable relocation plan and provide a detailed quotation.",
+    bullets: ["Pre-move survey", "Full container / groupage option", "Dedicated move coordinator"],
   },
   {
     n: "02",
-    title: "Packing & loading",
-    body: "FIDI-grade packing crews. Export-grade cartons, custom crates for art and pianos, full digital inventory.",
-    bullets: ["Photo inventory", "Fragile crating", "Same-day loading"],
+    title: "Professional packing",
+    body: "Our trained packing specialists use high-quality packing materials and industry-approved techniques to protect your household goods, furniture, electronics, and fragile items for international transport.",
+    bullets: ["Experienced crew", "International packing standard", "High quality materials"],
   },
   {
     n: "03",
-    title: "Freight & customs",
-    body: "Air, FCL, LCL or hybrid. We hold an SSM-licensed freight forwarder registration and bonded partners at every destination port — no third-party broker required.",
-    bullets: ["SSM licensed forwarder", "Destination customs filing", "DDP terms available"],
+    title: "International shipping",
+    body: "We suggest you the cost effective shipping option. Choose between air freight or sea freight based on your budget and delivery timeline. We coordinate transportation, shipping schedules, and logistics to ensure your shipment moves efficiently.",
+    bullets: ["Sea & air freight", "Groupage / shared containers", "Insurance coverage"],
   },
   {
     n: "04",
-    title: "Delivery & unpack",
-    body: "Licensed delivery partners in every destination metro we serve. Unpacked, assembled, and debris removed — same day.",
-    bullets: ["5 countries served", "White-glove unpack", "Settle-in concierge"],
+    title: "Customs clearance & delivery",
+    body: "Our team assists with customs documentation and clearance requirements before arranging the final delivery of your belongings to your new home, making your international move as smooth as possible.",
+    bullets: ["Documentation", "Customs clearance", "Delivery"],
   },
 ];
 
@@ -39,13 +39,14 @@ function Services() {
             <div className="eyebrow">DOOR · TO · DOOR · 02</div>
             <h2 className="h1 mt-16">
               One team. <span className="serif">One contract.</span><br />
-              From your flat to your front door.
+              A simple and well-planned relocation process.
             </h2>
           </div>
           <p className="lede" style={{ maxWidth: 44 + "ch" }}>
-            Every APAC Relocation move is owned by a single dedicated move manager.
-            No handoffs between agents, freight forwarders, or local movers — just one
-            number, one invoice, one timeline.
+            At APAC Relocation, we believe international moving should be straightforward
+            and hassle-free. Our experienced team manages every stage of your relocation,
+            ensuring your belongings are handled with care from your home in Malaysia to
+            your destination overseas.
           </p>
         </div>
 
@@ -81,39 +82,39 @@ function Services() {
 const STEPS = [
   {
     week: "T − 12 weeks",
-    title: "Get a quote & lock your plan",
-    body: "Book a 20-min survey. We confirm volume, dates, and visa-aware customs strategy. A move manager is assigned in 48 hours.",
-    tasks: ["Online survey or home visit", "Visa class confirmation", "Fixed quote signed"],
+    title: "Get a quote & plan your move",
+    body: "Every successful international move starts with careful planning. Share your moving requirements with our relocation specialists, and we'll assess your shipment, recommend the most suitable shipping method, and prepare a personalized moving plan.",
+    tasks: ["Initial relocation consultation", "Shipment assessment & quotation", "Dedicated move coordinator assigned"],
   },
   {
     week: "T − 8 weeks",
-    title: "Paperwork & permits",
-    body: "We file your destination customs entry and personal effects declaration. You sign — we do the rest.",
-    tasks: ["Customs entry prepared", "Import declaration filing", "Restricted-item review"],
+    title: "Documentation & customs preparation",
+    body: "Our team guides you through the documentation required for your international move, ensuring your shipment complies with destination customs regulations before departure.",
+    tasks: ["Customs documentation guidance", "Shipping document preparation", "Import and export compliance support"],
   },
   {
     week: "T − 4 weeks",
-    title: "Disconnect & downsize",
-    body: "Concierge handles utilities, school records, banking, and a curated donation/sale plan for items you're not shipping.",
-    tasks: ["Utility cut-offs", "School records transfer", "Sale & donation pickup"],
+    title: "Preparing for your move",
+    body: "Before moving day, we help you organize your shipment and prepare everything for a smooth relocation. This ensures packing and transportation can begin without delays.",
+    tasks: ["Pre-move planning and scheduling", "Inventory preparation", "Shipment readiness review"],
   },
   {
     week: "T − 1 week",
-    title: "Pack day",
-    body: "Our crew arrives, packs and inventories everything in 1–2 days. Loading the same week — you keep working until Friday.",
-    tasks: ["Photo inventory", "Custom crating", "Container loading"],
+    title: "Professional packing & collection",
+    body: "Our experienced packing team carefully packs, labels, and prepares your belongings using high-quality export packing materials. Every item is handled with care to ensure safe international transportation.",
+    tasks: ["Professional export packing", "Protective wrapping for fragile items", "Secure loading and collection"],
   },
   {
     week: "T + 2 days",
-    title: "You fly. We sail.",
-    body: "You land at your new home with a 30-day welcome kit (linens, kitchen basics). Your shipment is in transit, tracked daily.",
-    tasks: ["Welcome kit at hotel", "Daily transit updates", "Arrival appointment booked"],
+    title: "International shipping",
+    body: "Once your shipment is collected, we coordinate its journey through our trusted international logistics network. Throughout transit, our team keeps you informed until your shipment reaches its destination.",
+    tasks: ["Air or sea freight coordination", "Shipment tracking updates", "Customs clearance coordination"],
   },
   {
     week: "T + 4 weeks",
-    title: "Move-in day",
-    body: "Delivery, unpack, assemble, and debris removal — usually within one calendar day at destination.",
-    tasks: ["Destination customs cleared", "Furniture assembled", "Settle-in concierge handoff"],
+    title: "Delivery & move-in",
+    body: "After customs clearance, your shipment is delivered safely to your new home. Our destination partners complete the final delivery so you can settle in with confidence.",
+    tasks: ["Final destination delivery", "Unloading and placement of belongings", "Completion of your international relocation"],
   },
 ];
 

@@ -4,6 +4,29 @@ import { ROUTES } from "./calculator.jsx";
 
 // Pet teaser + animated stats + FAQ accordion + Contact form + Sticky quote widget.
 
+const PET_SERVICES = [
+  {
+    title: "Pet travel planning",
+    body: "We outline your destination country's import requirements, travel timelines, and necessary documentation before your pet's journey begins.",
+  },
+  {
+    title: "Documentation support",
+    body: "Our team prepares all required paperwork, including import permits, veterinary documents, health certificates, and vaccination records.",
+  },
+  {
+    title: "Travel crate guidance",
+    body: "We advise you on selecting airline-approved travel crates to ensure your pet's safety and comfort.",
+  },
+  {
+    title: "International transport coordination",
+    body: "We coordinate your pet's travel arrangements and work with trusted partners to ensure a smooth relocation from departure to arrival.",
+  },
+  {
+    title: "Arrival assistance",
+    body: "Where available, we assist with destination procedures to ensure your pet's arrival is completed efficiently.",
+  },
+];
+
 function PetTeaser() {
   return (
     <section className="band cream" id="pets">
@@ -12,18 +35,30 @@ function PetTeaser() {
           <div className="pet-left">
             <div className="eyebrow">PET · RELOCATION · 08</div>
             <h2 className="h1 mt-16">
-              The whole family flies.<br />
-              <span className="serif">Pets included.</span>
+              Every family member<br />
+              <span className="serif">deserves a safe arrival.</span>
             </h2>
             <p className="lede mt-24" style={{ maxWidth: 46 + "ch" }}>
-              IATA Live Animal Regulations certified. We handle the rabies titre tests,
-              USDA endorsements, in-cabin paperwork, and custom-built crates.
-              For dogs, cats, birds, and the occasional rabbit.
+              Moving overseas with a pet requires careful planning, accurate documentation,
+              and compliance with destination regulations. At APAC Relocation, we manage each
+              stage of your pet's relocation to ensure a smooth and comfortable journey.
             </p>
-            <div className="pet-stats mt-24">
-              <div><span className="mono pet-stat">2,400+</span><span className="muted"> pets moved</span></div>
-              <div><span className="mono pet-stat">0</span><span className="muted"> incidents since 2019</span></div>
-              <div><span className="mono pet-stat">IPATA</span><span className="muted"> accredited</span></div>
+            <p className="lede mt-16" style={{ maxWidth: 46 + "ch" }}>
+              Whether you are relocating with a dog, cat, bird, or other eligible companion
+              animal, our experienced team guides you through travel requirements, health
+              documentation, transport arrangements, and destination regulations for a safe
+              international move.
+            </p>
+            <div className="pet-services mt-32">
+              <div className="text-mono-sm mb-16">OUR PET RELOCATION SERVICES</div>
+              <ul>
+                {PET_SERVICES.map((s) => (
+                  <li key={s.title}>
+                    <span className="pet-service-t">{s.title}</span>
+                    <span className="muted">{s.body}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
             <div className="mt-32 gap-12 row" style={{ flexWrap: "wrap" }}>
               <a className="btn primary" href="#contact">
@@ -50,7 +85,7 @@ function PetTeaser() {
 
 // ── Stats ────────────────────────────────────────────────────────────────────
 
-function CountUp({ to, suffix = "", duration = 1400, decimals = 0 }) {
+function CountUp({ to, suffix = "", duration = 1400, decimals = 0, group = true }) {
   const [n, setN] = useState(0);
   const ref = useRef(null);
   useEffect(() => {
@@ -75,18 +110,20 @@ function CountUp({ to, suffix = "", duration = 1400, decimals = 0 }) {
   }, [to]);
   const formatted = decimals > 0
     ? n.toFixed(decimals)
-    : Math.round(n).toLocaleString();
+    : group
+    ? Math.round(n).toLocaleString()
+    : String(Math.round(n));   // years etc. — no thousands separator
   return <span ref={ref} className="mono">{formatted}{suffix}</span>;
 }
 
 function Stats() {
   const stats = [
-    { value: 12840, suffix: "", label: "Families moved", note: "Since 2014" },
-    { value: 4.94, decimals: 2, suffix: "", label: "Verified rating", note: "2,108 reviews" },
-    { value: 96.3, decimals: 1, suffix: "%", label: "On-time delivery", note: "Last 12 months" },
-    { value: 5, suffix: "", label: "Countries served", note: "Full clearance" },
-    { value: 0, suffix: "", label: "Hidden fees", note: "Fixed-price guarantee" },
-    { value: 48, suffix: "h", label: "Quote turnaround", note: "Avg post-survey" },
+    { value: 1000, suffix: "+", label: "International moves annually", note: "Trusted by families & businesses" },
+    { value: 2012, group: false, suffix: "", label: "Established", note: "Serving clients worldwide" },
+    { value: 20, suffix: "%", label: "Average annual growth", note: "Year-on-year business growth" },
+    { value: 3, suffix: "", label: "Countries of operation", note: "Singapore, Malaysia & India" },
+    { value: 0, suffix: "", label: "Hidden charges", note: "Transparent pricing" },
+    { value: 48, suffix: "h", label: "Average quote turnaround", note: "Fast and responsive support" },
   ];
   return (
     <section className="band ink stats">
@@ -98,15 +135,15 @@ function Stats() {
           </div>
         </div>
         <h2 className="h1 mt-24" style={{ maxWidth: 24 + "ch" }}>
-          The kind of operating record<br />
-          <span className="serif" style={{ color: "var(--gold)" }}>you can plan a life around.</span>
+          Trusted by customers, supported by proven experience.<br />
+          <span className="serif" style={{ color: "var(--gold)" }}>Experience you can trust.</span>
         </h2>
 
         <div className="stats-grid mt-48">
           {stats.map((s, i) => (
             <div key={i} className="stat-cell">
               <div className="stat-val">
-                <CountUp to={s.value} suffix={s.suffix} decimals={s.decimals || 0} />
+                <CountUp to={s.value} suffix={s.suffix} decimals={s.decimals || 0} group={s.group !== false} />
               </div>
               <div className="stat-lbl">{s.label}</div>
               <div className="stat-note">{s.note}</div>
@@ -122,36 +159,44 @@ function Stats() {
 
 const FAQS = [
   {
-    q: "How much does it cost to move from Malaysia abroad?",
-    a: "All-in door-to-door averages RM 24,000 (studio) to RM 55,000 (4-bedroom), depending on destination. The biggest drivers are mode (sea vs air), volume, packing scope, and destination country. Use our live calculator for an estimate within ±5% of your final invoice.",
+    q: "How much does it cost to move overseas from Malaysia?",
+    a: "The cost depends on factors such as your destination, shipment volume, shipping method, and additional services like packing or storage. Contact APAC Relocation for a personalized quotation based on your moving requirements.",
   },
   {
-    q: "How long does a move from Malaysia actually take?",
-    a: "Sea freight runs 7–48 days port-to-port depending on destination, plus 7–10 days of origin services and 3–7 days of destination customs and delivery. Singapore is under two weeks door-to-door; Australia, the UK, and Canada typically run 6 to 9 weeks. Air freight collapses long-haul routes to 3–4 weeks, and express courier for essential boxes lands in 5–8 days.",
+    q: "How long does an international move take?",
+    a: "Transit times vary depending on the destination and shipping method. Air freight is generally faster, while sea freight is a more economical option for larger shipments.",
   },
   {
-    q: "What can't I ship to my destination country?",
-    a: "Alcohol, perishables, plant materials, firearms without a permit, and certain electronics with lithium-ion above 100Wh are restricted almost everywhere. We send a personalized restricted-items list for your specific destination with every quote and walk you through its unaccompanied-goods declaration.",
+    q: "Do you provide door-to-door international moving services?",
+    a: "Yes. APAC Relocation offers complete door-to-door relocation services, including packing, transportation, customs support, and final delivery.",
   },
   {
-    q: "Do I have to be present when you pack?",
-    a: "Yes, on packing day. We need a designated decision-maker — you or a nominated proxy — for inventory sign-off. Most of our clients keep working until the moment we arrive, then hand us their keys.",
+    q: "Which countries do you provide relocation services to?",
+    a: "We assist with international moves from Malaysia to destinations including Australia, Singapore, Canada, the United Kingdom, New Zealand, the United States, Europe, the Middle East, and many other countries.",
   },
   {
-    q: "Do you handle the visa process too?",
-    a: "We work with immigration partners across Australia, the UK, Canada, Singapore, and the US, and route every client to whichever team fits their visa class. We do not file the visa ourselves, but we coordinate timelines so your shipment and your visa arrive in step.",
+    q: "Can you help with customs clearance?",
+    a: "Yes. Our team provides guidance on the customs documentation required for your shipment and coordinates the customs clearance process with our destination partners.",
   },
   {
-    q: "What's covered by insurance — and at what cost?",
-    a: "Our all-risk transit cover is 2.5% of declared value plus a $180 administration fee. It includes door-to-door cover, war and strikes risk, and a 60-day storage-in-transit window. We process claims in-house — most resolve in under 21 days.",
+    q: "Should I choose air freight or sea freight?",
+    a: "Air freight is ideal for urgent or smaller shipments, while sea freight is more cost-effective for larger household moves. Our relocation specialists will help you choose the best option based on your budget and timeline.",
   },
   {
-    q: "Can you store my things if my new lease isn't ready?",
-    a: "Yes. Origin storage in Kuala Lumpur is RM 19/m³/week (climate-controlled). Destination storage in our partner warehouses is RM 27/m³/week. Both can be reserved up to 6 months ahead.",
+    q: "Do you offer packing services?",
+    a: "Yes. We provide professional export packing using high-quality materials to ensure your belongings are protected throughout the journey.",
   },
   {
-    q: "What if my move size or date changes?",
-    a: "Volume changes are recalculated against the same per-m³ rate locked in your quote — no re-pricing risk. Date changes inside 14 days of pack day incur an RM 2,100 rebooking fee; outside that window, no charge.",
+    q: "Can I store my belongings before delivery?",
+    a: "Yes. We offer secure short-term and long-term storage solutions if your new home is not ready to receive your shipment.",
+  },
+  {
+    q: "Is transit insurance available?",
+    a: "Yes. We offer transit insurance options to provide additional protection for your belongings during international transportation.",
+  },
+  {
+    q: "How can I get a moving quote?",
+    a: "Simply share your moving details, including your current location in Malaysia, destination, preferred moving date, and estimated shipment size. Our team will prepare a customized quotation based on your requirements.",
   },
 ];
 
@@ -167,7 +212,7 @@ function FAQ() {
               Questions, <span className="serif">answered.</span>
             </h2>
             <p className="lede mt-24">
-              Eight things almost everyone asks before signing a relocation contract.
+              Answers to common questions about moving from Malaysia.
               Couldn't find yours?
             </p>
             <a className="btn ghost mt-24" href="#contact">

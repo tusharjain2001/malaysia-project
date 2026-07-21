@@ -6,107 +6,83 @@ import { SectionHeader, Placeholder } from "./chrome.jsx";
 const VISAS = [
   {
     code: "189",
-    name: "Skilled Independent (Australia)",
+    name: "Skilled Independent Visa (Australia)",
     category: "Work",
-    durationMonths: 999,
-    cap: "Points-tested · 65 pts min",
     leadTime: "8–14 months",
-    cost: "RM 6,500–RM 8,200",
-    family: "Spouse + dependents",
-    greenCardPath: "Direct (PR)",
-    summary: "Points-tested permanent visa for skilled Malaysians with an occupation on Australia's skilled list. No employer sponsor needed.",
-    requires: ["Skills assessment", "EOI + invitation", "IELTS/PTE score"],
+    visaType: "Permanent residence",
+    bestFor: "Skilled professionals",
+    summary: "A points-tested permanent residence visa for skilled professionals who meet Australia's migration requirements and wish to live and work independently.",
+    requires: ["Skills assessment", "Invitation to apply", "English language proficiency"],
   },
   {
     code: "482",
-    name: "Skilled Worker (UK)",
+    name: "Skilled Worker Visa (United Kingdom)",
     category: "Work",
-    durationMonths: 60,
-    cap: "No cap · sponsor required",
     leadTime: "2–4 months",
-    cost: "RM 4,200–RM 7,800",
-    family: "Dependent visa",
-    greenCardPath: "Via ILR (5 yrs)",
-    summary: "The standard route for Malaysians with a confirmed UK job offer from a licensed sponsor, across most skilled occupations.",
-    requires: ["Job offer + CoS", "Salary threshold met", "English requirement"],
+    visaType: "Work visa",
+    bestFor: "Professionals with a job offer",
+    summary: "A work visa for professionals who have secured employment with a licensed employer in the UK.",
+    requires: ["Confirmed job offer", "Salary threshold", "English language requirement"],
   },
   {
     code: "EP",
     name: "Employment Pass (Singapore)",
     category: "Work",
-    durationMonths: 24,
-    cap: "No cap · salary-based",
     leadTime: "3–8 weeks",
-    cost: "RM 500–RM 1,200",
-    family: "Dependant's Pass",
-    greenCardPath: "Via PR (case-by-case)",
-    summary: "Fastest route for Malaysians — no quota, minimal paperwork, and often approved within weeks given proximity and ties.",
-    requires: ["Job offer", "Min. salary RM 15,800/mo", "Recognised degree"],
+    visaType: "Employment visa",
+    bestFor: "Professionals and executives",
+    summary: "A professional work visa designed for foreign professionals, managers, and executives employed by Singapore-based companies.",
+    requires: ["Valid employment offer", "Minimum qualifying salary", "Recognized qualifications"],
   },
   {
     code: "FSW",
     name: "Express Entry (Canada)",
     category: "Work",
-    durationMonths: 999,
-    cap: "Points-tested · CRS ranked",
     leadTime: "6–8 months",
-    cost: "RM 3,800–RM 5,500",
-    family: "Spouse + children",
-    greenCardPath: "Direct (PR)",
-    summary: "Federal Skilled Worker stream ranks candidates by age, education, and work experience — top-ranked profiles get an invitation to apply.",
-    requires: ["ECA credential check", "IELTS/CELPIP score", "CRS profile"],
+    visaType: "Permanent residence",
+    bestFor: "Skilled workers",
+    summary: "Canada's points-based immigration pathway for skilled professionals seeking permanent residence.",
+    requires: ["Educational assessment", "Language test", "Competitive CRS score"],
   },
   {
     code: "H-1B",
-    name: "Specialty Occupation (USA)",
+    name: "H-1B Visa (United States)",
     category: "Work",
-    durationMonths: 36,
-    cap: "Annual lottery · 85,000",
-    leadTime: "8–14 months",
-    cost: "RM 15,000–RM 34,000",
-    family: "H-4 dependents",
-    greenCardPath: "Yes",
-    summary: "Employer-sponsored work visa for specialty occupations — the most common route for Malaysian tech and finance hires.",
-    requires: ["Bachelor's degree", "Employer sponsor", "Lottery selection"],
+    leadTime: "Varies by application cycle",
+    visaType: "Employment visa",
+    bestFor: "Specialised professionals",
+    summary: "A temporary work visa for qualified professionals employed in specialty occupations.",
+    requires: ["Employer sponsorship", "Relevant qualifications", "Lottery selection (where applicable)"],
   },
   {
     code: "Student",
-    name: "Student Route (UK)",
+    name: "Student Visa (United Kingdom)",
     category: "Study",
-    durationMonths: 36,
-    cap: "No cap",
     leadTime: "3–6 weeks",
-    cost: "RM 1,800 + IHS",
-    family: "Dependants (PG only)",
-    greenCardPath: "Via Graduate Route (2 yrs)",
-    summary: "Full-time study at a licensed UK sponsor institution, with a 2-year post-study work window on the Graduate Route.",
-    requires: ["CAS from sponsor", "Financial proof", "English requirement"],
+    visaType: "Student visa",
+    bestFor: "International students",
+    summary: "Allows international students to study full-time at an approved UK educational institution.",
+    requires: ["Confirmation of Acceptance for Studies (CAS)", "Proof of financial support", "English language proficiency"],
   },
   {
     code: "Study Permit",
     name: "Study Permit (Canada)",
     category: "Study",
-    durationMonths: 48,
-    cap: "No cap",
     leadTime: "4–8 weeks",
-    cost: "RM 550 + proof of funds",
-    family: "Open work permit (spouse)",
-    greenCardPath: "Via PGWP → PR",
-    summary: "Study at a Designated Learning Institution, with a post-graduation work permit that's a common bridge to permanent residence.",
-    requires: ["Letter of acceptance", "Proof of funds", "Ties to Malaysia"],
+    visaType: "Student visa",
+    bestFor: "Higher education",
+    summary: "A study permit that allows international students to pursue education at designated Canadian institutions.",
+    requires: ["Letter of acceptance", "Proof of funds", "Medical examination (if applicable)"],
   },
   {
     code: "820/801",
     name: "Partner Visa (Australia)",
     category: "Family",
-    durationMonths: 999,
-    cap: "Unlimited",
     leadTime: "12–24 months",
-    cost: "RM 8,500–RM 10,000",
-    family: "Direct path",
-    greenCardPath: "Direct (PR)",
-    summary: "Permanent residence for spouses and de facto partners of Australian citizens or PR holders — temporary visa granted first.",
-    requires: ["Genuine relationship", "Sponsor eligibility", "Health & character checks"],
+    visaType: "Family visa",
+    bestFor: "Partners and spouses",
+    summary: "A visa pathway that allows spouses and eligible partners of Australian citizens or permanent residents to live in Australia.",
+    requires: ["Genuine relationship evidence", "Sponsor eligibility", "Health and character checks"],
   },
 ];
 
@@ -122,14 +98,15 @@ function Visa() {
           <div>
             <div className="eyebrow">VISA · OPTIONS · 06</div>
             <h2 className="h1 mt-16">
-              Pick a path.<br />
-              <span className="serif">We'll meet you at the embassy.</span>
+              Find the right visa for your move.<br />
+              <span className="serif">Explore the most popular relocation pathways.</span>
             </h2>
           </div>
           <p className="lede" style={{ maxWidth: 42 + "ch" }}>
-            Visa choice shapes everything — your customs forms, your tax residency, your kids'
-            school enrollment. Our immigration partners hold a 96.3% first-attempt approval
-            rate for Malaysian applicants since 2019.
+            Choosing the right visa is one of the most important steps in an international
+            move. Whether you're relocating for work, study, business, or family, understanding
+            your visa options early helps make the relocation process smoother. Below are some
+            of the most common visa pathways our clients choose when moving abroad.
           </p>
         </div>
 
@@ -160,9 +137,8 @@ function Visa() {
 
               <dl className="visa-specs mt-24">
                 <div><dt>Lead time</dt><dd className="mono">{v.leadTime}</dd></div>
-                <div><dt>Government cost</dt><dd className="mono">{v.cost}</dd></div>
-                <div><dt>Cap</dt><dd className="mono" style={{ fontSize: 12 }}>{v.cap}</dd></div>
-                <div><dt>Green card path</dt><dd className="mono">{v.greenCardPath}</dd></div>
+                <div><dt>Visa type</dt><dd className="mono">{v.visaType}</dd></div>
+                <div style={{ gridColumn: "1 / -1" }}><dt>Best for</dt><dd className="mono">{v.bestFor}</dd></div>
               </dl>
 
               <div className="visa-reqs">
@@ -173,7 +149,7 @@ function Visa() {
               </div>
 
               <a className="visa-link mt-24" href="#contact">
-                Talk to an immigration partner <span className="arr">→</span>
+                Speak with our relocation team <span className="arr">→</span>
               </a>
             </article>
           ))}
@@ -193,12 +169,12 @@ const DEST = [
     coord: { x: 88, y: 60 },
     transit: "24–34 days",
     air: "8–11 days",
-    avgCost: "RM 19,400",
-    population: "5.4M metro",
+    avgCost: "From RM 19,000*",
+    population: "5.4 Million",
     climate: "Mild · 54–77°F",
-    community: "Largest Malaysian community in Australia",
-    why: "Finance, tech, and healthcare hub. Direct 8hr flight from KL. Strong Malaysian student and professional network.",
-    neighborhoods: ["Chatswood", "Hurstville", "Parramatta", "Eastwood"],
+    community: "Strong Malaysian community and excellent lifestyle.",
+    why: "One of the most popular destinations for Malaysian families and professionals, offering excellent career opportunities, quality education, and a high standard of living.",
+    neighborhoods: ["Chatswood", "Parramatta", "Eastwood", "Burwood", "Strathfield"],
     accent: "var(--accent)",
   },
   {
@@ -208,12 +184,12 @@ const DEST = [
     coord: { x: 46, y: 22 },
     transit: "35–45 days",
     air: "9–12 days",
-    avgCost: "RM 22,600",
-    population: "9.6M metro",
+    avgCost: "From RM 22,500*",
+    population: "9.6 Million",
     climate: "Cool · 40–73°F",
-    community: "Top study destination for Malaysian students",
-    why: "Global finance, law, and postgraduate study. Historic ties via Commonwealth and JPA scholarship pipelines.",
-    neighborhoods: ["Kingston", "Wembley", "Croydon", "Ealing"],
+    community: "Financial hub with leading universities and multinational employers.",
+    why: "A preferred destination for professionals and students seeking global career opportunities, world-class universities, and international business exposure.",
+    neighborhoods: ["Canary Wharf", "Wembley", "Croydon", "Ealing", "Kingston"],
     accent: "var(--sage)",
   },
   {
@@ -223,12 +199,12 @@ const DEST = [
     coord: { x: 66, y: 52 },
     transit: "7–12 days",
     air: "2–4 days",
-    avgCost: "RM 8,900",
-    population: "5.9M metro",
+    avgCost: "From RM 8,500*",
+    population: "5.9 Million",
     climate: "Tropical · 75–88°F",
-    community: "Closest and most common move for Malaysians",
-    why: "An hour from KL by air, no time zone change. The single most common cross-border move for Malaysian professionals.",
-    neighborhoods: ["Woodlands", "Jurong East", "Bukit Timah", "Sengkang"],
+    community: "Short transit time and strong employment opportunities.",
+    why: "A convenient destination for Malaysians relocating for employment, business, or family, with close cultural ties and excellent connectivity.",
+    neighborhoods: ["Woodlands", "Jurong East", "Bukit Timah", "Novena", "Tampines"],
     accent: "var(--gold)",
   },
   {
@@ -238,12 +214,12 @@ const DEST = [
     coord: { x: 24, y: 24 },
     transit: "38–48 days",
     air: "10–13 days",
-    avgCost: "RM 24,800",
-    population: "6.7M metro",
+    avgCost: "From RM 24,500*",
+    population: "6.7 Million",
     climate: "Variable · 23–80°F",
-    community: "Fast-growing Malaysian community via Express Entry",
-    why: "Finance, tech, and one of the clearest permanent residence pathways for skilled Malaysians.",
-    neighborhoods: ["Scarborough", "Markham", "Mississauga", "North York"],
+    community: "Strong immigration pathways and diverse communities.",
+    why: "A leading destination for skilled professionals, families, and international students looking for long-term settlement opportunities.",
+    neighborhoods: ["North York", "Markham", "Mississauga", "Scarborough", "Richmond Hill"],
     accent: "var(--accent)",
   },
   {
@@ -253,12 +229,57 @@ const DEST = [
     coord: { x: 10, y: 40 },
     transit: "26–36 days",
     air: "9–12 days",
-    avgCost: "RM 21,200",
-    population: "7.7M metro",
+    avgCost: "From RM 21,000*",
+    population: "7.7 Million (Metro)",
     climate: "Mild · 50–70°F",
-    community: "Established Malaysian tech professional network",
-    why: "Bay Area tech corridor. The top destination for Malaysian engineers on employer-sponsored visas.",
-    neighborhoods: ["Mission Bay", "Sunnyvale", "Fremont", "Daly City"],
+    community: "Global technology hub with excellent career prospects.",
+    why: "A major destination for technology professionals relocating to Silicon Valley and the surrounding Bay Area.",
+    neighborhoods: ["Fremont", "Sunnyvale", "Mission Bay", "Daly City", "Milpitas"],
+    accent: "var(--ink)",
+  },
+  {
+    city: "Melbourne",
+    state: "Victoria, Australia",
+    code: "MEL",
+    coord: { x: 84, y: 64 },
+    transit: "24–34 days",
+    air: "8–11 days",
+    avgCost: "From RM 18,800*",
+    population: "5.3 Million",
+    climate: "Mild · 48–79°F",
+    community: "Excellent lifestyle and highly ranked universities.",
+    why: "Popular among families and students for its quality education, multicultural environment, and excellent healthcare.",
+    neighborhoods: ["Box Hill", "Glen Waverley", "Clayton", "Footscray", "Carlton"],
+    accent: "var(--sage)",
+  },
+  {
+    city: "Dubai",
+    state: "Dubai, United Arab Emirates",
+    code: "DXB",
+    coord: { x: 57, y: 38 },
+    transit: "18–28 days",
+    air: "5–7 days",
+    avgCost: "From RM 15,500*",
+    population: "3.7 Million",
+    climate: "Hot · 66–106°F",
+    community: "Business-friendly environment and excellent global connectivity.",
+    why: "A preferred destination for professionals and entrepreneurs seeking tax-efficient living and international business opportunities.",
+    neighborhoods: ["Dubai Marina", "Business Bay", "Jumeirah", "Downtown Dubai", "Al Barsha"],
+    accent: "var(--gold)",
+  },
+  {
+    city: "Auckland",
+    state: "Auckland, New Zealand",
+    code: "AKL",
+    coord: { x: 93, y: 63 },
+    transit: "28–38 days",
+    air: "8–10 days",
+    avgCost: "From RM 20,000*",
+    population: "1.7 Million",
+    climate: "Mild · 46–74°F",
+    community: "High quality of life and family-friendly communities.",
+    why: "An attractive destination for families looking for a relaxed lifestyle, excellent education, and a safe living environment.",
+    neighborhoods: ["Mount Eden", "Epsom", "Remuera", "Albany", "Takapuna"],
     accent: "var(--ink)",
   },
 ];
@@ -271,8 +292,8 @@ function Destinations() {
       <div className="wrap">
         <SectionHeader
           kicker="POPULAR · DESTINATIONS · 07"
-          title="Where Malaysians relocate in 2026."
-          lede="The five countries our Kuala Lumpur office sees most often, ranked by move volume. Tap a pin or card to compare."
+          title="Popular destinations for international moves from Malaysia."
+          lede="Explore some of the most popular destinations our customers relocate to from Malaysia. Compare estimated transit times, average moving costs, and destination highlights to help plan your international move."
         />
 
         <div className="dest-shell mt-48">
@@ -371,17 +392,17 @@ function Destinations() {
                   <div className="lbl">Air transit</div>
                 </div>
                 <div className="numtile">
-                  <div className="num" style={{ fontSize: 24 }}>{d.avgCost}</div>
-                  <div className="lbl">Avg move cost</div>
+                  <div className="num" style={{ fontSize: 20 }}>{d.avgCost}</div>
+                  <div className="lbl">Average move cost</div>
                 </div>
                 <div className="numtile">
                   <div className="num" style={{ fontSize: 15, lineHeight: 1.3 }}>{d.community}</div>
-                  <div className="lbl">Community</div>
+                  <div className="lbl">Why people move here</div>
                 </div>
               </div>
 
               <div className="mt-24">
-                <div className="text-mono-sm mb-8">POPULAR NEIGHBORHOODS</div>
+                <div className="text-mono-sm mb-8">POPULAR AREAS</div>
                 <div className="dest-tags">
                   {d.neighborhoods.map((n) => (
                     <span key={n} className="chip">{n}</span>
@@ -394,7 +415,7 @@ function Destinations() {
                   {d.climate}
                 </div>
                 <a className="btn ghost" href="#calculator">
-                  Quote a move to {d.city} <span className="arr">→</span>
+                  Get a quote for {d.city} <span className="arr">→</span>
                 </a>
               </div>
             </div>

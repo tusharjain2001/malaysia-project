@@ -20,7 +20,12 @@ import {
 // Step 3: payment
 // Step 4: order confirmation
 
-const BF_STEPS = ["Inventory", "Quote", "Payment", "Confirm"];
+const BF_STEPS = [
+  { label: "Inventory", blurb: "Create your inventory by scanning each room using our AI-assisted video survey." },
+  { label: "Quote", blurb: "Receive a personalized real-time quotation based on your inventory and moving requirements." },
+  { label: "Payment", blurb: "Securely complete your booking with our online payment system." },
+  { label: "Confirmation", blurb: "Receive your booking confirmation and let our relocation specialists take care of the rest." },
+];
 
 // ── Item presets ────────────────────────────────────────────────────────────
 // `box` = AI detection bounding box on the camera frame, in % {x,y,w,h}
@@ -129,19 +134,22 @@ function normalizePricing(res) {
 // ── Step indicator ─────────────────────────────────────────────────────────
 function BfStepIndicator({ step }) {
   return (
-    <div className="bf-steps">
-      {BF_STEPS.map((s, i) => (
-        <div
-          key={s}
-          className={"bf-step" + (i === step ? " active" : "") + (i < step ? " done" : "")}
-        >
-          <span className="bf-step-n mono">
-            {i < step ? "✓" : String(i + 1).padStart(2, "0")}
-          </span>
-          <span className="bf-step-l">{s}</span>
-        </div>
-      ))}
-    </div>
+    <>
+      <div className="bf-steps">
+        {BF_STEPS.map((s, i) => (
+          <div
+            key={s.label}
+            className={"bf-step" + (i === step ? " active" : "") + (i < step ? " done" : "")}
+          >
+            <span className="bf-step-n mono">
+              {i < step ? "✓" : String(i + 1).padStart(2, "0")}
+            </span>
+            <span className="bf-step-l">{s.label}</span>
+          </div>
+        ))}
+      </div>
+      {BF_STEPS[step] && <div className="bf-step-blurb">{BF_STEPS[step].blurb}</div>}
+    </>
   );
 }
 
@@ -373,7 +381,7 @@ function VideoSurvey({ onComplete, rooms }) {
     <div className="bf-video">
       {/* Room selector — lives on the survey screen */}
       <div className="bf-survey-bar">
-        <span className="text-mono-sm bf-survey-bar-lbl">SCAN ROOM&nbsp;·</span>
+        <span className="text-mono-sm bf-survey-bar-lbl">SELECT A ROOM&nbsp;·</span>
         <div className="bf-room-chips">
           {rooms.map((r) => {
             const done = scanned.has(r.id);
@@ -455,8 +463,11 @@ function VideoSurvey({ onComplete, rooms }) {
                   <path d="M16.5 10l5-3v10l-5-3z" />
                 </svg>
               </div>
-              <div className="bf-video-empty-t">Pick a room above to start the AI walkthrough</div>
-              <div className="bf-video-empty-s muted">Scan one room, then come back and add the next — items add up as you go.</div>
+              <div className="bf-video-empty-t">AI video survey</div>
+              <div className="bf-video-empty-s muted">
+                Choose a room above to begin your AI video survey. Walk through one room at a
+                time while our AI identifies and records the items you plan to move.
+              </div>
             </div>
           )}
 
@@ -468,7 +479,7 @@ function VideoSurvey({ onComplete, rooms }) {
 
         <div className="bf-video-side">
           <div className="bf-video-side-h">
-            <div className="text-mono-sm">INVENTORY · BY ROOM</div>
+            <div className="text-mono-sm">INVENTORY BY ROOM</div>
             <div className="mono" style={{ fontSize: 11, color: "var(--muted)" }}>
               {scannedCount}/{rooms.length} rooms
             </div>
@@ -476,8 +487,8 @@ function VideoSurvey({ onComplete, rooms }) {
           <ul className="bf-detected">
             {grouped.length === 0 && (
               <li className="bf-detected-placeholder muted">
-                No rooms scanned yet. Choose a room above and the AI will list every item it finds —
-                grouped under that room. Tap a box on the video to drop anything you're not shipping.
+                Your scanned items will appear here, organized by room, making it easy to review
+                your inventory before requesting your quotation.
               </li>
             )}
             {grouped.map(({ room, items }) =>
@@ -563,13 +574,13 @@ function VideoSurvey({ onComplete, rooms }) {
             )}
             {scannedCount === 0 && (
               <button className="btn ghost" onClick={() => onComplete(flattenRooms(rooms), "")}>
-                Skip — use standard preset
+                Skip — I'll enter my inventory manually
               </button>
             )}
             {error && <div className="bf-api-error mono">{error}</div>}
             <div className="bf-video-note mono">
               {scannedCount === 0
-                ? "Select a room above, then record or choose a walkthrough video of it."
+                ? "Select a room above to begin your AI walkthrough and continue room by room until your inventory is complete."
                 : `${totalQty} items across ${scannedCount} room${scannedCount === 1 ? "" : "s"}${nextRoom ? " · pick another room to add more" : " · all rooms scanned"}.`}
             </div>
           </>
@@ -904,6 +915,20 @@ function QuoteSummary({ orderId, volume, moveType, values, meta, onPay, onBack }
           )}
           {!loading && !error && quote && (
             <>
+              <dl className="bf-breakdown-note">
+                <div>
+                  <dt>Origin</dt>
+                  <dd>Professional packing, loading, export documentation, and handling at origin.</dd>
+                </div>
+                <div>
+                  <dt>Freight</dt>
+                  <dd>International sea or air freight charges based on your shipment volume and destination.</dd>
+                </div>
+                <div>
+                  <dt>Destination</dt>
+                  <dd>Customs clearance, destination handling, final delivery, and unpacking (where applicable).</dd>
+                </div>
+              </dl>
               <ul className="bf-breakdown">
                 {quote.lines.map((l) => (
                   <li key={l.label}>
@@ -924,16 +949,16 @@ function QuoteSummary({ orderId, volume, moveType, values, meta, onPay, onBack }
         </div>
 
         <div className="bf-quote-card">
-          <div className="bf-quote-card-h">What's included</div>
+          <div className="bf-quote-card-h">Rates include</div>
           <ul className="bf-incl">
-            <li><span className="mono">✓</span> Export-grade packing materials</li>
-            <li><span className="mono">✓</span> Professional packing &amp; loading</li>
-            <li><span className="mono">✓</span> Ocean freight to destination port</li>
-            <li><span className="mono">✓</span> Destination customs clearance</li>
-            <li><span className="mono">✓</span> Destination delivery &amp; unpack</li>
-            <li><span className="mono">✓</span> A-rated marine insurance</li>
-            <li><span className="mono">✓</span> 14-day price lock guarantee</li>
-            <li><span className="mono">✓</span> Real-time tracking dashboard</li>
+            <li><span className="mono">✓</span> Professional export packing materials</li>
+            <li><span className="mono">✓</span> Collection from your residence</li>
+            <li><span className="mono">✓</span> Export documentation and customs clearance</li>
+            <li><span className="mono">✓</span> International sea or air freight</li>
+            <li><span className="mono">✓</span> Destination customs clearance (where applicable)</li>
+            <li><span className="mono">✓</span> Destination handling and local delivery</li>
+            <li><span className="mono">✓</span> Unpacking service (if included in your quotation)</li>
+            <li><span className="mono">✓</span> Basic removal of used packing materials after unpacking</li>
           </ul>
         </div>
       </div>
@@ -969,33 +994,124 @@ function QuoteSummary({ orderId, volume, moveType, values, meta, onPay, onBack }
             </div>
             <h3 className="h3 mt-16">Service agreement</h3>
             <div className="bf-terms-body muted">
-              <p>
-                <strong>1. Price lock.</strong> The quoted total is held for 14 calendar days from
-                the date of payment. Carrier surcharges that arise after the lock period may
-                affect final invoicing.
-              </p>
-              <p>
-                <strong>2. Liability.</strong> Goods are insured under a Lloyd's-syndicated A-rated
-                marine cargo policy at 110% of declared value. Excluded items: cash, jewellery
-                above RM 15,000, perishables.
-              </p>
-              <p>
-                <strong>3. Cancellation.</strong> Full refund up to 7 days before pack day.
-                25% retention 6–3 days. 50% within 48 hours. No refund after crew dispatch.
-              </p>
-              <p>
-                <strong>4. Customs.</strong> Destination customs authorities may inspect any shipment. Inspection
-                fees, if levied, are passed through at cost.
-              </p>
-              <p>
-                <strong>5. Delivery window.</strong> Transit times are estimates based on
-                current carrier schedules. Demurrage and port congestion outside our control
-                are not the basis for refund.
-              </p>
-              <p>
-                Full agreement available at apacrelocation.com/terms — emailed with your
-                booking confirmation.
-              </p>
+              <h4 className="bf-terms-h">Our services in origin</h4>
+              <ul>
+                <li>Pre-move consultation and survey.</li>
+                <li>
+                  Experienced professional packing team will pack the items based on
+                  international moving standards.
+                </li>
+                <li>
+                  We take necessary precautions to prevent goods from any kind of moisture and
+                  water contamination damage.
+                </li>
+                <li>Our moving consultants will coordinate with your building management authority.</li>
+                <li>
+                  The quotation includes all port or shipping line charges in origin port and
+                  ocean freight charges to the destination port.
+                </li>
+                <li>
+                  Provision of various sizes of cartons, tapes, bubble wrap, wrapping papers,
+                  hardboard and all other required international standard packing material.
+                </li>
+                <li>
+                  Our expert moving consultants will take care of all important paperwork such as
+                  preparing transit inventory list, handling packing completion documents, managing
+                  export and outbound customs clearance documentation etc.
+                </li>
+              </ul>
+
+              <h4 className="bf-terms-h">Our services at destination</h4>
+              <ul>
+                <li>
+                  Import documentation and customs clearance including standard destination
+                  shipping line port charges.
+                </li>
+                <li>Transportation of the shipment from port to the residence/warehouse.</li>
+                <li>
+                  Our services at client destination include safe delivery of belongings to client
+                  residence, placing of boxes on flat surface or into respective rooms, assembling
+                  of normal furniture like dining table, beds etc. which does not require any
+                  highly-trained personnel, and unpacking of boxes onto countertops/benchtops as
+                  space permits.
+                </li>
+                <li>
+                  On the day of delivery, our crew will take care of cleaning debris and will
+                  return the empty container to the nearest port.
+                </li>
+                <li>
+                  The customer has to provide all import documentation for customs clearance prior
+                  to the arrival of the shipment at the port, or in advance as per the requirement
+                  in each country.
+                </li>
+              </ul>
+
+              <h4 className="bf-terms-h">Transit insurance</h4>
+              <ul>
+                <li>
+                  Apac Relocation can arrange transit insurance in accordance with the terms and
+                  conditions of transit insurance underwriters. If a client reports damage to any
+                  goods during transit, we can assist them in claim settlement proceedings.
+                </li>
+                <li>
+                  All claims shall be reported within 30 days of delivery as per the delivery
+                  document date.
+                </li>
+                <li>
+                  Completed insurance form must be submitted by the client 3 days prior to the
+                  packing date.
+                </li>
+                <li>Minimum insurance premium will be SGD 150.</li>
+                <li>
+                  Storage insurance extension is available after 90 free days, applicable fees
+                  may apply.
+                </li>
+                <li>
+                  All claims will be subject to the insurance underwriter's terms and conditions.
+                  Apac Relocation has no liability for the claim procedure or claiming amounts. In
+                  case of a non-insured shipment, Apac can be held liable for max S$100 per
+                  shipment.
+                </li>
+              </ul>
+
+              <h4 className="bf-terms-h">Rates exclude</h4>
+              <ul>
+                <li>
+                  Dismantling and assembling of new or flat-packed, IKEA, or furniture/items which
+                  require a specialist.
+                </li>
+                <li>
+                  Wall mounting, electrical works, piano handling, valet service — unpacking of
+                  boxes and placing in cupboards, shelves etc.
+                </li>
+                <li>Non-refundable deposit to condo/building management authority.</li>
+                <li>Delivery services on weekends, public holidays and non-office hours.</li>
+                <li>
+                  Stair carrying above 1st floor and use of external elevator. Parking permit slot
+                  charges and shuttling services beyond 50 feet between container/truck parking
+                  location and the main entrance of the residence.
+                </li>
+                <li>
+                  Destination port storage charges, destination customs warehouse storage, customs
+                  warehouse handling charges etc.
+                </li>
+                <li>
+                  Customs duty/tax, quarantine charges, X-ray/gamma radiation scanning fee,
+                  examination fee, and any government charges if any at the destination.
+                </li>
+                <li>
+                  Port storage charges/container detention charges. These charges can be applicable
+                  in the following cases — lack of necessary documents, non-availability of the
+                  client for the delivery, and any delay in the release of shipment from customs
+                  due to holidays, technical issues in the customs website, and unexpected issues
+                  like port congestion, natural calamities and strikes.
+                </li>
+                <li>
+                  Warehouse handling charges (in/out) other than indicated in the proposal. These
+                  charges are applicable only if storage is required by the client at
+                  origin/destination.
+                </li>
+              </ul>
             </div>
             <button className="btn primary mt-24" onClick={() => setShowTerms(false)}>
               Got it
@@ -1106,6 +1222,10 @@ function PaymentForm({ orderId, amount, currency, values, onConfirm, onBack }) {
           <div className="bf-pay-head">
             <div className="text-mono-sm">SECURE PAYMENT · 256-BIT TLS</div>
             <h4 className="bf-items-title mt-8">Choose how to pay</h4>
+            <p className="muted mt-8" style={{ fontSize: 13, lineHeight: 1.55, maxWidth: "60ch" }}>
+              Choose your preferred payment method to complete your booking. All payments are
+              processed securely, and your move will be confirmed once payment is received.
+            </p>
           </div>
 
           <div className="bf-pay-methods">
@@ -1224,8 +1344,8 @@ function Confirmation({ orderId, values, amount, currency, volume, onReset }) {
       </h3>
       <p className="lede" style={{ maxWidth: "52ch" }}>
         Your move manager will email <span className="mono">{values.email || "you"}</span>{" "}
-        within 4 working hours with your pack-day plan, customs paperwork, and tracking
-        dashboard credentials.
+        within 4 working hours with your moving plan, customs documentation, and shipment
+        tracking details.
       </p>
 
       <div className="bf-confirm-card">
@@ -1237,7 +1357,7 @@ function Confirmation({ orderId, values, amount, currency, volume, onReset }) {
           <div><div className="text-mono-sm">FROM → TO</div><div className="mono mt-8">{values.origin} → {values.dest}</div></div>
           <div><div className="text-mono-sm">MOVE TYPE</div><div className="mono mt-8">{values.size}</div></div>
           <div><div className="text-mono-sm">VOLUME</div><div className="mono mt-8">{m3Of(shownVolume)} m³ · {cftOf(shownVolume)} cft</div></div>
-          <div><div className="text-mono-sm">READY DATE</div><div className="mono mt-8">{values.date}</div></div>
+          <div><div className="text-mono-sm">MOVING DATE</div><div className="mono mt-8">{values.date}</div></div>
           <div><div className="text-mono-sm">PAID</div><div className="mono mt-8">{fmtMoney(amount, currency)}</div></div>
           <div><div className="text-mono-sm">SURVEY SLOT</div><div className="mono mt-8">Next 48h</div></div>
         </div>
@@ -1246,10 +1366,9 @@ function Confirmation({ orderId, values, amount, currency, volume, onReset }) {
       <div className="bf-confirm-next">
         <div className="text-mono-sm">WHAT HAPPENS NEXT</div>
         <ol className="bf-confirm-steps mt-16">
-          <li><span className="mono">01</span> Confirmation email + dashboard link · within 4h</li>
-          <li><span className="mono">02</span> Move manager call · within 48h</li>
-          <li><span className="mono">03</span> Customs paperwork · 2 weeks before pack</li>
-          <li><span className="mono">04</span> Pack day · crew arrives 09:00 MYT</li>
+          <li><span className="mono">01</span> Confirmation email with your booking details and customer dashboard access within 4 working hours.</li>
+          <li><span className="mono">02</span> Your dedicated move manager will contact you within 48 hours to guide you through the next steps.</li>
+          <li><span className="mono">03</span> Packing, shipping, customs clearance, and delivery updates will be available through your customer dashboard until your move is completed.</li>
         </ol>
       </div>
 

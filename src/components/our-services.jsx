@@ -5,9 +5,20 @@ import React from "react";
 
 const OUR_SERVICES = [
   {
+    key: "door",
+    title: "Door-to-door international moving",
+    body: "We manage your move from your home in Malaysia to your new destination, coordinating every stage of the relocation process for a seamless experience.",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12z" />
+        <circle cx="12" cy="9" r="2.5" />
+      </svg>
+    ),
+  },
+  {
     key: "packing",
-    title: "Professional packing",
-    body: "Export-grade materials, custom crating for fragile items, and full inventory documentation packed to destination-country customs standards.",
+    title: "Professional packing services",
+    body: "Our experienced packing team uses high-quality packing materials and proven techniques to protect your furniture, household goods, electronics, artwork, and fragile items during transit.",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="7" width="18" height="13" rx="2" />
@@ -17,9 +28,20 @@ const OUR_SERVICES = [
     ),
   },
   {
-    key: "freight",
-    title: "Sea & air freight",
-    body: "FCL and LCL sea freight to Sydney, London, Toronto, Singapore, San Francisco and beyond. Air freight for time-sensitive shipments.",
+    key: "air",
+    title: "Air freight services",
+    body: "For urgent relocations, our air freight solutions offer a faster way to transport your belongings worldwide.",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 3L3 10l7 3 3 7 8-17z" />
+        <path d="M10 13l5-5" />
+      </svg>
+    ),
+  },
+  {
+    key: "sea",
+    title: "Sea freight services",
+    body: "Sea freight is a cost-effective option for larger household shipments. We offer both Full Container Load (FCL) and Less-than-Container Load (LCL) solutions based on your shipment size.",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
         <path d="M3 17l1.5 3h15L21 17" />
@@ -31,8 +53,8 @@ const OUR_SERVICES = [
   },
   {
     key: "customs",
-    title: "Customs clearance",
-    body: "Complete documentation support: inventory lists, personal effects declarations, and duty-exemption applications at destination. No surprise delays.",
+    title: "Customs clearance support",
+    body: "International shipping involves customs regulations and documentation. Our team assists with the required paperwork and helps ensure a smooth customs clearance process.",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="3" width="18" height="18" rx="3" />
@@ -41,20 +63,9 @@ const OUR_SERVICES = [
     ),
   },
   {
-    key: "door",
-    title: "Door-to-door delivery",
-    body: "From your Malaysian home to your new front door, anywhere in the world. Real-time tracking throughout so you always know where your belongings are.",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M21 3L3 10l7 3 3 7 8-17z" />
-        <path d="M10 13l5-5" />
-      </svg>
-    ),
-  },
-  {
-    key: "insurance",
-    title: "Marine insurance",
-    body: "Comprehensive marine cargo insurance for all sea freight shipments with A-rated underwriters for your peace of mind.",
+    key: "storage",
+    title: "Secure storage solutions",
+    body: "If your new home isn't ready, we offer secure short-term and long-term storage options to keep your belongings safe until you're ready for delivery.",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
         <rect x="4" y="3" width="16" height="18" rx="2" />
@@ -65,13 +76,13 @@ const OUR_SERVICES = [
     ),
   },
   {
-    key: "vehicle",
-    title: "Vehicle shipping",
-    body: "RoRo and container shipping for cars and motorcycles. We handle destination-country compliance and registration documentation.",
+    key: "insurance",
+    title: "Transit insurance",
+    body: "For peace of mind, we offer transit insurance to protect your belongings throughout your international move.",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12z" />
-        <circle cx="12" cy="9" r="2.5" />
+        <path d="M12 3l7 3v5.5c0 4.2-2.9 7.6-7 8.5-4.1-.9-7-4.3-7-8.5V6z" />
+        <path d="M9 12l2 2 4-4" />
       </svg>
     ),
   },
@@ -81,13 +92,14 @@ function OurServices() {
   return (
     <section className="band cream" id="our-services">
       <div className="wrap">
-        <div className="eyebrow">OUR · SERVICES · 04</div>
+        <div className="eyebrow">OUR · INTERNATIONAL · MOVING · SERVICES · 04</div>
         <h2 className="h1 mt-16" style={{ maxWidth: "18ch" }}>
-          International moving <span className="serif">services</span> from Malaysia.
+          Everything you need for a <span className="serif">smooth move</span> from Malaysia.
         </h2>
         <p className="lede mt-16" style={{ maxWidth: "62ch" }}>
-          End-to-end relocation from your Malaysian home to your new front door abroad —
-          managed by our experienced coordinators.
+          Every international relocation is unique. Whether moving a few items or an entire
+          household, APAC Relocation offers a full range of services to make your move simple,
+          secure, and hassle-free.
         </p>
 
         <div className="our-services-grid mt-48">

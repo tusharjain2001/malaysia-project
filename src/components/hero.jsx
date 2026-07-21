@@ -17,22 +17,27 @@ function Hero({ quoteState }) {
         <div className="hero-left">
           <div className="eyebrow">KUALA LUMPUR · BASED · WORLDWIDE</div>
           <h1 className="display mt-24">
-            Your <span className="serif">whole life</span>,<br />
-            moved from Malaysia.
+            Begin your international move from Malaysia with us.
           </h1>
 
           <div className="hero-desc mt-32">
             <p className="lede">
-              Moving abroad involves securing the right visa, arranging sea or air
-              freight, and clearing customs at the other end. Sea freight typically takes
-              20–45 days and costs approximately RM 9,000–30,000 for a full household,
-              depending on destination. APAC Relocation manages the entire physical move
-              door-to-door — from Kuala Lumpur, Penang, or Johor Bahru.
+              Relocating internationally involves more than moving your belongings. Each
+              stage, from planning and packing to shipping, customs clearance, and
+              delivery, requires careful coordination.
             </p>
             <p className="lede mt-16">
-              Plan your relocation the right way. Share your inventory, choose your
-              preferred survey method, and receive accurate moving estimates from
-              trusted relocation experts.
+              <strong>APAC Relocation assists</strong> individuals, families, and
+              businesses moving from Malaysia to worldwide. Our experienced team manages
+              the entire process, providing a single point of contact from your initial
+              quote to the safe arrival of your belongings.
+            </p>
+            <p className="lede mt-16">
+              We offer international moving services from major Malaysian cities,
+              including Kuala Lumpur, Penang, Johor Bahru, Shah Alam, Petaling Jaya,
+              Malacca, Ipoh, Kuching, and Kota Kinabalu. Whether moving a few items or an
+              entire household, we tailor each relocation to your destination, timeline,
+              and requirements.
             </p>
           </div>
         </div>
@@ -345,11 +350,35 @@ function QuoteBand({ values, setValues, scrollToCalc }) {
                 ? <>Real-time booking, <span className="serif">step by step.</span></>
                 : gate === "otp"
                 ? <>One quick check, <span className="serif">then your quote.</span></>
-                : <>Tell us where, <span className="serif">we'll tell you how much.</span></>}
+                : <>Tell us where you're moving. <span className="serif">Get a real-time quote.</span></>}
             </h2>
+            {started && (
+              <div className="quote-band-desc">
+                <p>
+                  Plan your international move in just a few simple steps. Use our AI-powered
+                  video survey to create your inventory, receive a real-time quotation, complete
+                  your payment securely, and confirm your booking — all from one place.
+                </p>
+              </div>
+            )}
+            {!started && gate !== "otp" && (
+              <div className="quote-band-desc">
+                <p>
+                  Every international move is unique. The cost depends on your destination,
+                  shipment volume, preferred shipping method, and any additional services you
+                  require. Share a few details with us, and our relocation specialists will
+                  prepare a tailored quotation based on your specific moving requirements.
+                </p>
+                <p>
+                  Whether you're relocating a small apartment, a family home, or an office,
+                  we'll recommend the most suitable shipping option and provide a clear
+                  breakdown of the estimated costs and transit time.
+                </p>
+              </div>
+            )}
           </div>
           <div className="quote-band-meta">
-            <span><i />Live carrier rates</span>
+            <span><i />Real-time pricing</span>
             <span><i />AI video survey</span>
             <span><i />Pay &amp; book online</span>
           </div>
@@ -442,10 +471,9 @@ function QuoteBand({ values, setValues, scrollToCalc }) {
         {formError && <div className="quote-error mono">{formError}</div>}
 
         <div className="quote-band-foot">
-          <span><span className="check">✓</span> 14-day price lock</span>
-          <span><span className="check">✓</span> FIDI &amp; IAM accredited</span>
-          <span><span className="check">✓</span> SSM Licensed Forwarder</span>
-          <span><span className="check">✓</span> 4.94★ · 2,108 reviews</span>
+          <span><span className="check">✓</span> Transparent pricing</span>
+          <span><span className="check">✓</span> IAM trusted member</span>
+          <span><span className="check">✓</span> Singapore Logistics Association</span>
         </div>
         </>
         )}
