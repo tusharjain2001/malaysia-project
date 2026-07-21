@@ -344,6 +344,11 @@ function QuoteBand({ values, setValues, scrollToCalc }) {
       <div className="wrap">
         <div className="quote-band-hd">
           <div>
+            {flowActive && (
+              <button type="button" className="quote-band-home" onClick={reset}>
+                <span className="arr">←</span> Back to home
+              </button>
+            )}
             <div className="eyebrow">INSTANT · QUOTE · 01</div>
             <h2 className="h1 mt-16">
               {started

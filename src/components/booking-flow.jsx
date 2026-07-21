@@ -44,23 +44,59 @@ const HOUSEHOLD_ROOMS = [
     { name: "Dining chair", qty: 6, vol: 0.18, conf: 92, box: { x: 40, y: 44, w: 12, h: 18 } },
     { name: "Sideboard cabinet", qty: 1, vol: 0.9, conf: 90, box: { x: 6, y: 30, w: 20, h: 34 } },
   ] },
-  { id: "master", name: "Master Bedroom", items: [
+  { id: "study", name: "Study Room", items: [
+    { name: "Desk", qty: 1, vol: 0.7, conf: 94, box: { x: 30, y: 50, w: 34, h: 24 } },
+    { name: "Office chair", qty: 1, vol: 0.4, conf: 92, box: { x: 40, y: 58, w: 18, h: 28 } },
+    { name: "Bookshelf", qty: 2, vol: 1.1, conf: 93, box: { x: 6, y: 14, w: 15, h: 42 } },
+    { name: "Moving carton", qty: 8, vol: 0.18, conf: 90, box: { x: 74, y: 60, w: 14, h: 20 } },
+  ] },
+  { id: "office", name: "Office Room", items: [
+    { name: "Office desk", qty: 1, vol: 0.7, conf: 94, box: { x: 28, y: 50, w: 34, h: 24 } },
+    { name: "Office chair", qty: 1, vol: 0.4, conf: 92, box: { x: 42, y: 58, w: 18, h: 28 } },
+    { name: "Filing cabinet", qty: 1, vol: 0.5, conf: 91, box: { x: 8, y: 30, w: 16, h: 32 } },
+    { name: "Moving carton", qty: 6, vol: 0.18, conf: 90, box: { x: 72, y: 60, w: 14, h: 20 } },
+  ] },
+  { id: "bed1", name: "Bed Room 1", items: [
     { name: "Queen bed + mattress", qty: 1, vol: 2.4, conf: 97, box: { x: 30, y: 52, w: 44, h: 34 } },
     { name: "Wardrobe (large)", qty: 2, vol: 2.1, conf: 95, box: { x: 78, y: 14, w: 18, h: 46 } },
     { name: "Dresser", qty: 1, vol: 0.8, conf: 92, box: { x: 6, y: 24, w: 18, h: 28 } },
     { name: "Bedside table", qty: 2, vol: 0.2, conf: 89, box: { x: 8, y: 58, w: 14, h: 20 } },
   ] },
+  { id: "bed2", name: "Bed Room 2", items: [
+    { name: "Single bed + mattress", qty: 1, vol: 1.4, conf: 96, box: { x: 30, y: 52, w: 40, h: 32 } },
+    { name: "Wardrobe (medium)", qty: 1, vol: 1.5, conf: 94, box: { x: 78, y: 16, w: 17, h: 44 } },
+    { name: "Bedside table", qty: 1, vol: 0.2, conf: 89, box: { x: 8, y: 58, w: 14, h: 20 } },
+  ] },
+  { id: "bed3", name: "Bed Room 3", items: [
+    { name: "Single bed + mattress", qty: 1, vol: 1.4, conf: 96, box: { x: 32, y: 52, w: 40, h: 32 } },
+    { name: "Wardrobe (medium)", qty: 1, vol: 1.5, conf: 94, box: { x: 76, y: 16, w: 17, h: 44 } },
+    { name: "Bedside table", qty: 1, vol: 0.2, conf: 89, box: { x: 10, y: 58, w: 14, h: 20 } },
+  ] },
+  { id: "bed4", name: "Bed Room 4", items: [
+    { name: "Single bed + mattress", qty: 1, vol: 1.4, conf: 96, box: { x: 28, y: 52, w: 40, h: 32 } },
+    { name: "Wardrobe (medium)", qty: 1, vol: 1.5, conf: 94, box: { x: 74, y: 16, w: 17, h: 44 } },
+    { name: "Bedside table", qty: 1, vol: 0.2, conf: 89, box: { x: 6, y: 58, w: 14, h: 20 } },
+  ] },
   { id: "kitchen", name: "Kitchen", items: [
     { name: "Refrigerator", qty: 1, vol: 1.0, conf: 97, box: { x: 64, y: 14, w: 15, h: 42 } },
-    { name: "Washing machine", qty: 1, vol: 0.6, conf: 93, box: { x: 22, y: 60, w: 16, h: 28 } },
     { name: "Microwave", qty: 1, vol: 0.1, conf: 95, box: { x: 44, y: 34, w: 13, h: 12 } },
     { name: "Moving carton", qty: 16, vol: 0.18, conf: 90, box: { x: 6, y: 60, w: 14, h: 20 } },
   ] },
-  { id: "study", name: "Study / Office", items: [
-    { name: "Desk", qty: 1, vol: 0.7, conf: 94, box: { x: 30, y: 50, w: 34, h: 24 } },
-    { name: "Office chair", qty: 1, vol: 0.4, conf: 92, box: { x: 40, y: 58, w: 18, h: 28 } },
-    { name: "Bookshelf", qty: 2, vol: 1.1, conf: 93, box: { x: 6, y: 14, w: 15, h: 42 } },
-    { name: "Moving carton", qty: 8, vol: 0.18, conf: 90, box: { x: 74, y: 60, w: 14, h: 20 } },
+  { id: "laundry", name: "Laundry / Utility", items: [
+    { name: "Washing machine", qty: 1, vol: 0.6, conf: 93, box: { x: 22, y: 60, w: 16, h: 28 } },
+    { name: "Dryer", qty: 1, vol: 0.6, conf: 92, box: { x: 44, y: 60, w: 16, h: 28 } },
+    { name: "Ironing board", qty: 1, vol: 0.15, conf: 88, box: { x: 68, y: 40, w: 12, h: 34 } },
+    { name: "Moving carton", qty: 4, vol: 0.18, conf: 90, box: { x: 6, y: 62, w: 14, h: 20 } },
+  ] },
+  { id: "balcony", name: "Balcony", items: [
+    { name: "Outdoor table", qty: 1, vol: 0.5, conf: 91, box: { x: 34, y: 52, w: 28, h: 24 } },
+    { name: "Outdoor chair", qty: 2, vol: 0.25, conf: 89, box: { x: 66, y: 56, w: 16, h: 24 } },
+    { name: "Potted plant", qty: 2, vol: 0.2, conf: 87, box: { x: 8, y: 50, w: 14, h: 28 } },
+  ] },
+  { id: "entrance", name: "Entrance", items: [
+    { name: "Shoe cabinet", qty: 1, vol: 0.5, conf: 92, box: { x: 12, y: 44, w: 20, h: 34 } },
+    { name: "Console table", qty: 1, vol: 0.3, conf: 90, box: { x: 44, y: 48, w: 24, h: 22 } },
+    { name: "Coat rack", qty: 1, vol: 0.15, conf: 87, box: { x: 76, y: 22, w: 12, h: 40 } },
   ] },
 ];
 
@@ -70,7 +106,7 @@ const PARTIAL_ROOMS = [
     { name: "TV (43\")", qty: 1, vol: 0.25, conf: 99, box: { x: 60, y: 20, w: 22, h: 17 } },
     { name: "Bookshelf", qty: 2, vol: 1.1, conf: 94, box: { x: 6, y: 14, w: 15, h: 40 } },
   ] },
-  { id: "bedroom", name: "Bedroom", items: [
+  { id: "bed1", name: "Bed Room 1", items: [
     { name: "Queen bed + mattress", qty: 1, vol: 2.4, conf: 97, box: { x: 30, y: 52, w: 44, h: 34 } },
     { name: "Wardrobe (medium)", qty: 1, vol: 1.5, conf: 95, box: { x: 78, y: 16, w: 17, h: 44 } },
     { name: "Moving carton", qty: 14, vol: 0.18, conf: 90, box: { x: 8, y: 60, w: 14, h: 20 } },
@@ -568,7 +604,10 @@ function VideoSurvey({ onComplete, rooms }) {
               </button>
             )}
             {nextRoom && (
-              <button className="btn ghost" onClick={() => scanRoom(nextRoom.id)}>
+              <button
+                className={"btn " + (scannedCount > 0 ? "ghost" : "primary")}
+                onClick={() => scanRoom(nextRoom.id)}
+              >
                 {scannedCount > 0 ? `+ Add ${nextRoom.name}` : `Start with ${nextRoom.name}`} →
               </button>
             )}

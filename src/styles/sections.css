@@ -172,6 +172,19 @@
 .quote-band-hd .eyebrow::before { background: rgba(255,255,255,0.4); }
 .quote-band-hd h2 { color: #ffffff; }
 .quote-band-hd .serif { color: var(--gold); }
+/* Leaves the booking flow — the rest of the page is hidden while it's open,
+   so this is the only way back out short of a reload. */
+.quote-band-home {
+  display: inline-flex; align-items: center; gap: 8px;
+  margin-bottom: 16px; padding: 7px 14px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.24);
+  border-radius: 999px;
+  color: rgba(255,255,255,0.9);
+  font-size: 13px; cursor: pointer;
+  transition: border-color .15s ease, background .15s ease, color .15s ease;
+}
+.quote-band-home:hover { border-color: var(--gold); color: #fff; background: rgba(255,255,255,0.10); }
 .quote-band-desc {
   max-width: 62ch;
   margin-top: 16px;
