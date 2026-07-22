@@ -18,11 +18,8 @@ const ORIGIN_CODES = {
 };
 
 const MODES = [
-  { id: "air",     label: "Air freight",          tag: "Fastest",       speedMul: 1.0,  costMul: 2.6 },
-  { id: "express", label: "Express courier",      tag: "Door 5–8 days", speedMul: 0.85, costMul: 3.4 },
   { id: "fcl",     label: "Sea — Full container", tag: "Best for full home", speedMul: 1.0, costMul: 1.0 },
   { id: "lcl",     label: "Sea — Shared (LCL)",   tag: "Most affordable", speedMul: 1.08, costMul: 0.72 },
-  { id: "combo",   label: "Air + sea combo",      tag: "Essentials first", speedMul: 0.95, costMul: 1.55 },
 ];
 
 function useAnimatedNumber(target, ms = 600) {
