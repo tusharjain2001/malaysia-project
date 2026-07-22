@@ -113,11 +113,22 @@ const PARTIAL_ROOMS = [
   ] },
 ];
 
-function flattenRooms(rooms) {
-  return rooms.flatMap((r) => r.items.map((it) => ({ ...it, room: r.name })));
-}
-const HOUSEHOLD_PRESET = flattenRooms(HOUSEHOLD_ROOMS);
-const PARTIAL_PRESET = flattenRooms(PARTIAL_ROOMS);
+// Fallback inventory shown when the customer skips the AI video survey.
+// Quantities default to 1 — the customer adjusts them in the editor.
+const SKIP_INVENTORY = [
+  { name: "3-seater sofa", qty: 1, vol: 1.6, room: "Living Room" },
+  { name: "Coffee table", qty: 1, vol: 0.4, room: "Living Room" },
+  { name: "TV (55\")", qty: 1, vol: 0.3, room: "Living Room" },
+  { name: "Bookshelf", qty: 1, vol: 1.1, room: "Living Room" },
+  { name: "Armchair", qty: 1, vol: 0.7, room: "Living Room" },
+  { name: "Dining table (6-seat)", qty: 1, vol: 1.2, room: "Dining Room" },
+  { name: "Dining chair", qty: 1, vol: 0.18, room: "Dining Room" },
+  { name: "Sideboard cabinet", qty: 1, vol: 0.9, room: "Dining Room" },
+  { name: "Desk", qty: 1, vol: 0.7, room: "Study Room" },
+  { name: "Office chair", qty: 1, vol: 0.4, room: "Study Room" },
+  { name: "Bookshelf", qty: 1, vol: 1.1, room: "Study Room" },
+  { name: "Moving carton", qty: 1, vol: 0.18, room: "Study Room" },
+];
 
 const BOX_SIZES = {
   S: { label: "Small",  dims: "40 × 30 × 30 cm", vol: 0.036 },
@@ -612,7 +623,7 @@ function VideoSurvey({ onComplete, rooms }) {
               </button>
             )}
             {scannedCount === 0 && (
-              <button className="btn ghost" onClick={() => onComplete(flattenRooms(rooms), "")}>
+              <button className="btn ghost" onClick={() => onComplete(SKIP_INVENTORY, "")}>
                 Skip — I'll enter my inventory manually
               </button>
             )}
@@ -1424,9 +1435,7 @@ function BookingFlow({ values, orderId, onReset }) {
   const useBoxes = moveType === "Few Boxes";
 
   const [step, setStep] = useState(0); // 0=inventory, 1=quote, 2=payment, 3=confirmed
-  const [items, setItems] = useState(
-    moveType === "Partial Household" ? PARTIAL_PRESET : HOUSEHOLD_PRESET
-  );
+  const [items, setItems] = useState(SKIP_INVENTORY);
   const [boxes, setBoxes] = useState([]);
   const [surveyDone, setSurveyDone] = useState(false);
   const [volume, setVolume] = useState(0);
