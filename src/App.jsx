@@ -51,7 +51,7 @@ function App() {
 
   const [quoteState, setQuoteState] = useState({
     origin: "Singapore",
-    dest: "Sydney, Australia",
+    dest: "Australia",
     size: "Full Household",
     date: "2026-08-15",
     name: "",

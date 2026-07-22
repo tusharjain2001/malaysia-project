@@ -244,6 +244,29 @@ export function getSeaPricing(pricingRequest) {
     },
   });
 }
+// Live calculator pricing — APAC split endpoint (SEA only). Volume is sent in
+// CUBIC_FT; the selected city fills destination_port and destination_city.
+export function getApacPricing({ originPort, originCountry, destinationCity, toCountry, volumeM3, containerType, shipmentType, movingType }) {
+  return req("/api/v1/order/get-pricing-with-split-for-apac", {
+    method: "POST",
+    body: {
+      origin_port: originPort,
+      origin_country: originCountry,
+      destination_port: destinationCity,
+      destination_city: destinationCity,
+      to_country: toCountry,
+      volume: { magnitude: ((Number(volumeM3) || 0) * M3_TO_FT3).toFixed(2), unit: "CUBIC_FT" },
+      container_type: containerType, // FT_40 (full) | FT_20 (shared)
+      shipment_type: shipmentType,   // FCL (full) | CONSOLE (shared)
+      shipment_mode: "SEA",
+      moving_type: movingType,       // FULL_HOUSEHOLD (full) | PARTIAL_HOUSEHOLD (shared)
+      direct_loading: false,
+      is_edited: false,
+      from_survey_app: true,
+    },
+  });
+}
+
 export function getAirPricing(orderId) {
   return req(`/api/v1/order/pricing/air-shipment?orderId=${encodeURIComponent(orderId)}`, {
     method: "POST",

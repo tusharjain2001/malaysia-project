@@ -1,15 +1,45 @@
 import React, { useState, useEffect, useRef } from "react";
 import { SectionHeader } from "./chrome.jsx";
+import { getApacPricing, CURRENCY } from "../api/client.js";
 
-// Live cost & timeline calculator. Sliders + mode selector → animated price + Gantt.
+// Live cost & timeline calculator. Sliders + mode selector → live API price + Gantt.
+// Pricing comes from the APAC pricing-with-split endpoint; the timeline stays local.
 
-const ROUTES = {
-  "Sydney, Australia":       { code: "SYD", airDays: [8, 11],  seaDays: [24, 34], baseSea: 9800,  baseAir: 24500, distanceKm: 6600 },
-  "London, United Kingdom":  { code: "LHR", airDays: [9, 12],  seaDays: [35, 45], baseSea: 11500, baseAir: 27500, distanceKm: 10500 },
-  "Singapore":               { code: "SIN", airDays: [2, 4],   seaDays: [7, 12],  baseSea: 4200,  baseAir: 9800,  distanceKm: 1500 },
-  "Toronto, Canada":         { code: "YYZ", airDays: [10, 13], seaDays: [38, 48], baseSea: 12800, baseAir: 29500, distanceKm: 14800 },
-  "San Francisco, USA":      { code: "SFO", airDays: [9, 12],  seaDays: [26, 36], baseSea: 10200, baseAir: 25800, distanceKm: 13100 },
+// Destination = country + city (two dropdowns). The API is queried with the
+// city as destination_port/destination_city and apiCountry as to_country.
+const DESTINATIONS = {
+  "Australia": {
+    apiCountry: "Australia",
+    cities: {
+      "Brisbane":  { code: "BNE", airDays: [8, 11], seaDays: [22, 32], distanceKm: 6150 },
+      "Melbourne": { code: "MEL", airDays: [8, 11], seaDays: [26, 36], distanceKm: 6300 },
+      "Sydney":    { code: "SYD", airDays: [8, 11], seaDays: [24, 34], distanceKm: 6600 },
+    },
+  },
+  "USA": {
+    apiCountry: "United States",
+    cities: {
+      "New York":      { code: "JFK", airDays: [9, 12], seaDays: [36, 46], distanceKm: 15300 },
+      "San Francisco": { code: "SFO", airDays: [9, 12], seaDays: [26, 36], distanceKm: 13600 },
+      "Washington":    { code: "IAD", airDays: [9, 12], seaDays: [36, 46], distanceKm: 15200 },
+    },
+  },
+  "Germany": {
+    apiCountry: "Germany",
+    cities: {
+      "Hamburg":   { code: "HAM", airDays: [9, 12], seaDays: [30, 40], distanceKm: 10300 },
+      "Berlin":    { code: "BER", airDays: [9, 12], seaDays: [30, 40], distanceKm: 9900 },
+      "Stuttgart": { code: "STR", airDays: [9, 12], seaDays: [30, 40], distanceKm: 10200 },
+    },
+  },
 };
+const DEFAULT_DEST = "Australia";
+const firstCityOf = (country) => Object.keys(DESTINATIONS[country].cities)[0];
+
+// Country-level view kept for the contact form and sticky quote widget.
+const ROUTES = Object.fromEntries(
+  Object.entries(DESTINATIONS).map(([k, v]) => [k, v.cities[firstCityOf(k)]])
+);
 
 const ORIGIN_CODES = {
   "Kuala Lumpur, Malaysia": { code: "KUL", city: "Kuala Lumpur" },
@@ -18,8 +48,10 @@ const ORIGIN_CODES = {
 };
 
 const MODES = [
-  { id: "fcl",     label: "Sea — Full container", tag: "Best for full home", speedMul: 1.0, costMul: 1.0 },
-  { id: "lcl",     label: "Sea — Shared (LCL)",   tag: "Most affordable", speedMul: 1.08, costMul: 0.72 },
+  { id: "fcl", label: "Sea — Full container", tag: "Best for full home", speedMul: 1.0,
+    containerType: "FT_40", shipmentType: "FCL", movingType: "FULL_HOUSEHOLD" },
+  { id: "lcl", label: "Sea — Shared (LCL)",   tag: "Most affordable", speedMul: 1.08,
+    containerType: "FT_20", shipmentType: "CONSOLE", movingType: "PARTIAL_HOUSEHOLD" },
 ];
 
 function useAnimatedNumber(target, ms = 600) {
@@ -86,22 +118,68 @@ function Calculator({ quoteState, setQuoteState }) {
   const [packing, setPacking] = useState("full");
   const [unpacking, setUnpacking] = useState(true);
 
-  const route = ROUTES[quoteState.dest] || ROUTES["Sydney, Australia"];
+  const destKey = DESTINATIONS[quoteState.dest] ? quoteState.dest : DEFAULT_DEST;
+  const [city, setCity] = useState(() => firstCityOf(destKey));
+  // guard against a city left over from a previously selected country
+  const cityKey = DESTINATIONS[destKey].cities[city] ? city : firstCityOf(destKey);
+  const route = DESTINATIONS[destKey].cities[cityKey];
   const origin = ORIGIN_CODES[quoteState.origin] || ORIGIN_CODES["Kuala Lumpur, Malaysia"];
   const m = MODES.find((x) => x.id === mode);
 
-  // Cost build-up
-  const baseFreight = mode.startsWith("air") || mode === "express" || mode === "combo"
-    ? route.baseAir * 0.55
-    : route.baseSea;
-  const volFactor = volume / 35;
-  const freight = Math.round(baseFreight * m.costMul * volFactor);
-  const originSvc = Math.round((packing === "full" ? 1200 : packing === "fragile" ? 700 : 380) * (volume / 35));
-  const destSvc = unpacking ? Math.round(620 * (volume / 35)) : 0;
-  const customs = 540;
-  const ins = insurance ? Math.round(freight * 0.025 + 180) : 0;
-  const total = freight + originSvc + destSvc + customs + ins;
-  const totalAnim = useAnimatedNumber(total);
+  // Live pricing from the APAC split endpoint (debounced — the slider fires fast).
+  const [pricing, setPricing] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [attempt, setAttempt] = useState(0); // bump to retry after an error
+
+  useEffect(() => {
+    let alive = true;
+    setLoading(true);
+    setError("");
+    const t = setTimeout(async () => {
+      try {
+        // The UI shows the Malaysian origin (KUL etc.), but the rate tables only
+        // have Singapore-origin prices — the payload always sends Singapore.
+        const res = await getApacPricing({
+          originPort: "Singapore",
+          originCountry: "Singapore",
+          destinationCity: cityKey,
+          toCountry: DESTINATIONS[destKey].apiCountry,
+          volumeM3: volume,
+          containerType: m.containerType,
+          shipmentType: m.shipmentType,
+          movingType: m.movingType,
+        });
+        if (!alive) return;
+        const money = (p) => {
+          const n = p && Number(typeof p === "object" ? p.amount : p);
+          return Number.isFinite(n) ? n : 0;
+        };
+        const freightPrice =
+          (res.lcl_pricing && res.lcl_pricing.price) || (res.fcl_pricing && res.fcl_pricing.price);
+        const total = money(res.final_price);
+        if (!total) throw new Error("No live rate is available for this route yet.");
+        setPricing({
+          currency: (res.final_price && res.final_price.currency) || CURRENCY,
+          freight: money(freightPrice),
+          originPack: money(res.origin_total),
+          destDelivery: money(res.destination_agent_pricing && res.destination_agent_pricing.price),
+          total,
+        });
+        setLoading(false);
+      } catch (e) {
+        if (!alive) return;
+        setError(e.message || "Could not fetch live pricing. Please try again.");
+        setPricing(null);
+        setLoading(false);
+      }
+    }, 450);
+    return () => { alive = false; clearTimeout(t); };
+  }, [destKey, cityKey, mode, volume, attempt]);
+
+  const cur = (pricing && pricing.currency) || CURRENCY;
+  const fmt = (n) => Number(n).toLocaleString(undefined, { maximumFractionDigits: 2 });
+  const totalAnim = useAnimatedNumber(pricing ? pricing.total : 0);
 
   // Timeline build-up
   const isAir = mode === "air" || mode === "express";
@@ -158,11 +236,27 @@ function Calculator({ quoteState, setQuoteState }) {
                 <div className="dest-select-wrap">
                   <select
                     className="dest-select muted"
-                    value={quoteState.dest}
-                    onChange={(e) => setQuoteState((s) => ({ ...s, dest: e.target.value }))}
+                    value={destKey}
+                    onChange={(e) => {
+                      const c = e.target.value;
+                      setQuoteState((s) => ({ ...s, dest: c }));
+                      setCity(firstCityOf(c));
+                    }}
                   >
-                    {Object.keys(ROUTES).map((k) => (
-                      <option key={k} value={k}>{k.split(",")[0]}</option>
+                    {Object.keys(DESTINATIONS).map((k) => (
+                      <option key={k} value={k}>{k}</option>
+                    ))}
+                  </select>
+                  <span className="dest-select-arrow">▾</span>
+                </div>
+                <div className="dest-select-wrap">
+                  <select
+                    className="dest-select muted"
+                    value={cityKey}
+                    onChange={(e) => setCity(e.target.value)}
+                  >
+                    {Object.keys(DESTINATIONS[destKey].cities).map((k) => (
+                      <option key={k} value={k}>{k}</option>
                     ))}
                   </select>
                   <span className="dest-select-arrow">▾</span>
@@ -235,12 +329,14 @@ function Calculator({ quoteState, setQuoteState }) {
             <div className="calc-price card">
               <div className="between">
                 <div>
-                  <div className="text-mono-sm">ALL-IN ESTIMATE · MYR</div>
+                  <div className="text-mono-sm">ALL-IN ESTIMATE · {cur}</div>
                   <div className="price-num mono">
-                    RM {totalAnim.toLocaleString()}
+                    {loading ? "…" : error ? "—" : `${cur} ${totalAnim.toLocaleString()}`}
                   </div>
                   <div className="muted" style={{ fontSize: 13 }}>
-                    Door-to-door · taxes included · valid for 14 days
+                    {loading
+                      ? "Fetching live carrier rates…"
+                      : "Door-to-door · taxes included · valid for 14 days"}
                   </div>
                 </div>
                 <div className="price-pill">
@@ -253,24 +349,33 @@ function Calculator({ quoteState, setQuoteState }) {
 
               <hr className="hr mt-24" />
 
-              <div className="breakdown">
+              {error && !loading && (
+                <div style={{ marginTop: 16 }}>
+                  <div className="mono" style={{ color: "var(--accent)", fontSize: 13 }}>{error}</div>
+                  <button className="btn ghost" style={{ marginTop: 12 }} onClick={() => setAttempt((a) => a + 1)}>
+                    Retry
+                  </button>
+                </div>
+              )}
+
+              <div className="breakdown" style={loading ? { opacity: 0.45 } : undefined}>
                 {[
-                  ["International freight", freight],
-                  ["Origin pack & loading", originSvc],
-                  ["Destination delivery", destSvc],
-                  ["Customs &amp; clearance", customs],
-                  ["Transit insurance", ins],
+                  ["International freight", pricing ? pricing.freight : 0],
+                  ["Origin pack & loading", pricing ? pricing.originPack : 0],
+                  ["Destination delivery", pricing ? pricing.destDelivery : 0],
+                  ["Customs & clearance", 0],
+                  ["Transit insurance", 0],
                 ].map(([lbl, v]) => (
                   <div className="bd-row" key={lbl}>
-                    <span dangerouslySetInnerHTML={{ __html: lbl }} />
-                    <span className="mono">RM {Number(v).toLocaleString()}</span>
+                    <span>{lbl}</span>
+                    <span className="mono">{cur} {fmt(v)}</span>
                   </div>
                 ))}
               </div>
 
-              <div className="bd-total">
+              <div className="bd-total" style={loading ? { opacity: 0.45 } : undefined}>
                 <span>Total</span>
-                <span className="mono">RM {total.toLocaleString()}</span>
+                <span className="mono">{cur} {fmt(pricing ? pricing.total : 0)}</span>
               </div>
             </div>
 

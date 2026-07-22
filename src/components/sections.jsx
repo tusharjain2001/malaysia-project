@@ -417,7 +417,7 @@ function StickyQuote({ quoteState, scrollToCalc }) {
         <div className="sq-route mono">
           <span>KUL</span>
           <span className="arr">→</span>
-          <span>{(ROUTES[quoteState.dest] || ROUTES["Sydney, Australia"]).code}</span>
+          <span>{(ROUTES[quoteState.dest] || ROUTES["Australia"]).code}</span>
         </div>
         <div className="sq-meta">
           <span>{quoteState.size}</span>
