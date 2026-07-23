@@ -130,10 +130,13 @@ const SKIP_INVENTORY = [
   { name: "Moving carton", qty: 1, vol: 0.18, room: "Study Room" },
 ];
 
+// Client-confirmed box specs (Jul 2026). `vol` is the client's nominal
+// shipping volume (Small 4 / Medium 5 / Large 6 cft — larger than the raw
+// L×W×H), converted to m³; that's what gets priced and charged.
 const BOX_SIZES = {
-  S: { label: "Small",  dims: "40 × 30 × 30 cm", vol: 0.036 },
-  M: { label: "Medium", dims: "55 × 40 × 40 cm", vol: 0.088 },
-  L: { label: "Large",  dims: "65 × 50 × 50 cm", vol: 0.163 },
+  S: { label: "Small",  dims: "46 × 33 × 38 cm", vol: 0.1133 }, // 4 cft
+  M: { label: "Medium", dims: "46 × 46 × 52 cm", vol: 0.1416 }, // 5 cft
+  L: { label: "Large",  dims: "46 × 46 × 74 cm", vol: 0.1699 }, // 6 cft
 };
 
 // ── Pricing helpers (live rates come from the API) ─────────────────────────

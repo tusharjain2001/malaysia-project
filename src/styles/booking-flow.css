@@ -437,8 +437,8 @@ body.booking-active .quote-band { min-height: 100vh; }
     0 4px 8px rgba(0,0,0,0.2);
 }
 .bf-size-icon[data-size="S"] .bf-box-3d { width: 28px; height: 24px; }
-.bf-size-icon[data-size="M"] .bf-box-3d { width: 40px; height: 32px; }
-.bf-size-icon[data-size="L"] .bf-box-3d { width: 52px; height: 42px; }
+.bf-size-icon[data-size="M"] .bf-box-3d { width: 34px; height: 38px; }
+.bf-size-icon[data-size="L"] .bf-box-3d { width: 34px; height: 52px; }
 .bf-size-label { color: #fff; font-weight: 600; font-size: 15px; }
 .bf-size-dims { font-size: 11px; color: rgba(255,255,255,0.55); margin-top: 4px; }
 .bf-size-vol { font-size: 11px; color: var(--gold); margin-top: 2px; }
