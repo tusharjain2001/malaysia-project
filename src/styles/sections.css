@@ -998,6 +998,16 @@
 }
 .footer ul { list-style: none; padding: 0; margin: 0; }
 .footer li { font-size: 14px; padding: 4px 0; color: var(--ink-2); }
+.footer ul.footer-addr { margin-top: 24px; }
+.footer .footer-addr li { font-size: 12px; padding: 2px 0; }
+.footer-socials { display: flex; gap: 14px; margin-top: 20px; }
+.footer-socials a {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 1px solid var(--hair); color: var(--muted);
+  transition: all .15s ease;
+}
+.footer-socials a:hover { color: var(--accent); border-color: var(--accent); }
 .footer a:hover { color: var(--accent); }
 .footer-bottom {
   display: flex; justify-content: space-between; align-items: center;

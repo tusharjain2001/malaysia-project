@@ -270,7 +270,7 @@ function Contact() {
             <div className="contact-meta mt-32">
               <div className="contact-block">
                 <div className="text-mono-sm">CALL</div>
-                <div className="mono contact-big">+60 3-2731 8420</div>
+                <div className="mono contact-big">+65 6520 1914</div>
                 <div className="muted" style={{ fontSize: 13 }}>Mon–Sat · 09:00–19:00 MYT</div>
               </div>
               <div className="contact-block">
@@ -280,7 +280,7 @@ function Contact() {
               </div>
               <div className="contact-block">
                 <div className="text-mono-sm">WHATSAPP</div>
-                <div className="mono contact-big">+60 12-345 6789</div>
+                <div className="mono contact-big">+65 6520 1914</div>
                 <div className="muted" style={{ fontSize: 13 }}>Fastest channel · 7 days</div>
               </div>
             </div>
