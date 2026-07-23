@@ -5,6 +5,7 @@ import {
   confirmRegistration,
   resendConfirmationCode,
   deepGet,
+  loadGoogleMaps,
 } from "../api/client.js";
 
 // Hero — full-viewport editorial headline, centered.
@@ -208,80 +209,57 @@ function OtpGate({ email, onVerified, onBack }) {
   );
 }
 
-// ── Origin dropdown ─────────────────────────────────────────────────────────
-// Custom places-style dropdown (white panel, pin icons) replacing the native
-// <select>, which renders as a plain OS menu.
-const ORIGIN_OPTIONS = [
-  "Singapore",
-  "Hyderabad, India",
-  "Mumbai, India",
-  "Delhi, India",
-  "Bangalore, India",
-  "Chennai, India",
-  "Kuala Lumpur, Malaysia",
-  "Penang, Malaysia",
-  "Johor Bahru, Malaysia",
-];
-
-function OriginSelect({ value, onChange }) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef(null);
+// ── City autocomplete (origin & destination) ────────────────────────────────
+// Text input backed by google.maps.places.Autocomplete (cities only). The
+// selected place is normalized to "City, Country" — the backend's lead
+// creation requires that shape. Without an API key (VITE_GOOGLE_PLACES_API_KEY
+// in .env) it degrades to a plain text field.
+function CityAutocomplete({ value, onChange }) {
+  const inputRef = useRef(null);
+  const acRef = useRef(null);
+  const onChangeRef = useRef(onChange);
+  onChangeRef.current = onChange;
 
   useEffect(() => {
-    if (!open) return;
-    const onDoc = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
-    const onKey = (e) => { if (e.key === "Escape") setOpen(false); };
-    document.addEventListener("mousedown", onDoc);
-    document.addEventListener("keydown", onKey);
+    let cancelled = false;
+    loadGoogleMaps().then((g) => {
+      if (cancelled || !g || !g.maps?.places?.Autocomplete || !inputRef.current) return;
+      // "(regions)" covers cities AND countries/states — searching "malaysia"
+      // offers Malaysia itself, "sydney" offers the city.
+      const ac = new g.maps.places.Autocomplete(inputRef.current, {
+        types: ["(regions)"],
+        fields: ["address_components", "name"],
+      });
+      ac.addListener("place_changed", () => {
+        const place = ac.getPlace() || {};
+        const comps = place.address_components || [];
+        const get = (t) => (comps.find((c) => c.types.includes(t)) || {}).long_name;
+        const city = get("locality") || get("postal_town") || get("administrative_area_level_1");
+        const country = get("country");
+        const next =
+          city && country && city !== country ? `${city}, ${country}`
+          : country || place.name || inputRef.current.value;
+        onChangeRef.current(next);
+      });
+      acRef.current = ac;
+    });
     return () => {
-      document.removeEventListener("mousedown", onDoc);
-      document.removeEventListener("keydown", onKey);
+      cancelled = true;
+      if (acRef.current && window.google?.maps?.event) {
+        window.google.maps.event.clearInstanceListeners(acRef.current);
+      }
     };
-  }, [open]);
+  }, []);
 
   return (
-    <div className="qc-dd" ref={ref}>
-      <button
-        type="button"
-        className="qc-input qc-dd-btn"
-        onClick={() => setOpen((o) => !o)}
-        aria-haspopup="listbox"
-        aria-expanded={open}
-      >
-        <span className="qc-dd-value">{value}</span>
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-          <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      </button>
-      {open && (
-        <ul className="qc-dd-panel" role="listbox">
-          {ORIGIN_OPTIONS.map((opt) => {
-            const [city, ...rest] = opt.split(",");
-            const sub = rest.join(",").trim();
-            return (
-              <li key={opt}>
-                <button
-                  type="button"
-                  role="option"
-                  aria-selected={opt === value}
-                  className={"qc-dd-item" + (opt === value ? " sel" : "")}
-                  onClick={() => { onChange(opt); setOpen(false); }}
-                >
-                  <span className="qc-dd-pin" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.8">
-                      <path d="M12 21s-7-5.6-7-11a7 7 0 1 1 14 0c0 5.4-7 11-7 11z" />
-                      <circle cx="12" cy="10" r="2.6" />
-                    </svg>
-                  </span>
-                  <span className="qc-dd-main">{city.trim()}</span>
-                  {sub && <span className="qc-dd-sub">{sub}</span>}
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      )}
-    </div>
+    <input
+      ref={inputRef}
+      className="qc-input"
+      type="text"
+      placeholder="City, country"
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+    />
   );
 }
 
@@ -402,18 +380,12 @@ function QuoteBand({ values, setValues, scrollToCalc }) {
         <div className="quote-row single-row">
           <div className="quote-cell no-caret">
             <span className="qc-label">Moving from</span>
-            <OriginSelect value={values.origin} onChange={(v) => update("origin", v)} />
+            <CityAutocomplete value={values.origin} onChange={(v) => update("origin", v)} />
           </div>
-          <label className="quote-cell no-caret">
+          <div className="quote-cell no-caret">
             <span className="qc-label">Moving to</span>
-            <input
-              className="qc-input"
-              type="text"
-              placeholder="City, country"
-              value={values.dest}
-              onChange={(e) => update("dest", e.target.value)}
-            />
-          </label>
+            <CityAutocomplete value={values.dest} onChange={(v) => update("dest", v)} />
+          </div>
           <label className="quote-cell no-caret">
             <span className="qc-label">Moving date</span>
             <input

@@ -311,6 +311,29 @@ export function getOrder(orderId) {
 // Same publishable key the working survey app uses (publishable keys are public).
 export const STRIPE_PUBLISHABLE_KEY = "pk_live_A4pqzjSx03dGMpIPIMrGzaIi00myhVoZVz";
 
+// ── Google Maps (Places autocomplete) ───────────────────────────────────────
+// Key comes from .env (VITE_GOOGLE_PLACES_API_KEY). Without a key this resolves
+// to null and the address field behaves as a plain text input.
+let googleMapsPromise = null;
+export function loadGoogleMaps() {
+  const key = import.meta.env.VITE_GOOGLE_PLACES_API_KEY;
+  if (!key) return Promise.resolve(null);
+  if (!googleMapsPromise) {
+    googleMapsPromise = new Promise((resolve) => {
+      if (window.google && window.google.maps && window.google.maps.places) {
+        return resolve(window.google);
+      }
+      const s = document.createElement("script");
+      s.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(key)}&libraries=places`;
+      s.async = true;
+      s.onload = () => resolve(window.google || null);
+      s.onerror = () => resolve(null);
+      document.head.appendChild(s);
+    });
+  }
+  return googleMapsPromise;
+}
+
 let stripePromise = null;
 export function loadStripe() {
   if (!STRIPE_PUBLISHABLE_KEY) return Promise.resolve(null);

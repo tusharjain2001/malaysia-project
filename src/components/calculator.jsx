@@ -58,9 +58,18 @@ const ROUTES = Object.fromEntries(
 );
 
 const ORIGIN_CODES = {
+  "Singapore":              { code: "SIN", city: "Singapore" },
   "Kuala Lumpur, Malaysia": { code: "KUL", city: "Kuala Lumpur" },
   "Penang, Malaysia":       { code: "PEN", city: "Penang" },
   "Johor Bahru, Malaysia":  { code: "JHB", city: "Johor Bahru" },
+};
+// The origin field is free text (Google Places) — derive a display code for
+// cities outside the known list.
+const originOf = (s) => {
+  if (ORIGIN_CODES[s]) return ORIGIN_CODES[s];
+  const city = (s || "").split(",")[0].trim();
+  if (!city) return ORIGIN_CODES["Kuala Lumpur, Malaysia"];
+  return { code: city.replace(/[^A-Za-z]/g, "").slice(0, 3).toUpperCase() || "—", city };
 };
 
 const MODES = [
@@ -136,7 +145,7 @@ function Calculator({ quoteState, setQuoteState }) {
 
   const { destKey, cityKey } = parseDest(quoteState.dest);
   const route = DESTINATIONS[destKey].cities[cityKey];
-  const origin = ORIGIN_CODES[quoteState.origin] || ORIGIN_CODES["Kuala Lumpur, Malaysia"];
+  const origin = originOf(quoteState.origin);
   const m = MODES.find((x) => x.id === mode);
 
   // Live pricing from the APAC split endpoint (debounced — the slider fires fast).
@@ -375,8 +384,6 @@ function Calculator({ quoteState, setQuoteState }) {
                   ["International freight", pricing ? pricing.freight : 0],
                   ["Origin pack & loading", pricing ? pricing.originPack : 0],
                   ["Destination delivery", pricing ? pricing.destDelivery : 0],
-                  ["Customs & clearance", 0],
-                  ["Transit insurance", 0],
                 ].map(([lbl, v]) => (
                   <div className="bd-row" key={lbl}>
                     <span>{lbl}</span>
