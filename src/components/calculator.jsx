@@ -36,7 +36,23 @@ const DESTINATIONS = {
 const DEFAULT_DEST = "Australia";
 const firstCityOf = (country) => Object.keys(DESTINATIONS[country].cities)[0];
 
-// Country-level view kept for the contact form and sticky quote widget.
+// quoteState.dest is stored as "City, Country" — the backend's lead creation
+// 500s (PRO_ERR_008) on a country-only destination_address, and the booking
+// flow sends dest verbatim as the address. Parse it back for the dropdowns.
+const parseDest = (dest) => {
+  const parts = (dest || "").split(",").map((s) => s.trim()).filter(Boolean);
+  const countryPart = parts.length > 1 ? parts[parts.length - 1] : parts[0] || "";
+  const destKey = DESTINATIONS[countryPart] ? countryPart : DEFAULT_DEST;
+  const cityPart = parts.length > 1 ? parts[0] : "";
+  const cityKey = DESTINATIONS[destKey].cities[cityPart] ? cityPart : firstCityOf(destKey);
+  return { destKey, cityKey };
+};
+const routeFor = (dest) => {
+  const { destKey, cityKey } = parseDest(dest);
+  return DESTINATIONS[destKey].cities[cityKey];
+};
+
+// Country-level view kept for the contact form's destination options.
 const ROUTES = Object.fromEntries(
   Object.entries(DESTINATIONS).map(([k, v]) => [k, v.cities[firstCityOf(k)]])
 );
@@ -118,10 +134,7 @@ function Calculator({ quoteState, setQuoteState }) {
   const [packing, setPacking] = useState("full");
   const [unpacking, setUnpacking] = useState(true);
 
-  const destKey = DESTINATIONS[quoteState.dest] ? quoteState.dest : DEFAULT_DEST;
-  const [city, setCity] = useState(() => firstCityOf(destKey));
-  // guard against a city left over from a previously selected country
-  const cityKey = DESTINATIONS[destKey].cities[city] ? city : firstCityOf(destKey);
+  const { destKey, cityKey } = parseDest(quoteState.dest);
   const route = DESTINATIONS[destKey].cities[cityKey];
   const origin = ORIGIN_CODES[quoteState.origin] || ORIGIN_CODES["Kuala Lumpur, Malaysia"];
   const m = MODES.find((x) => x.id === mode);
@@ -239,8 +252,7 @@ function Calculator({ quoteState, setQuoteState }) {
                     value={destKey}
                     onChange={(e) => {
                       const c = e.target.value;
-                      setQuoteState((s) => ({ ...s, dest: c }));
-                      setCity(firstCityOf(c));
+                      setQuoteState((s) => ({ ...s, dest: `${firstCityOf(c)}, ${c}` }));
                     }}
                   >
                     {Object.keys(DESTINATIONS).map((k) => (
@@ -253,7 +265,7 @@ function Calculator({ quoteState, setQuoteState }) {
                   <select
                     className="dest-select muted"
                     value={cityKey}
-                    onChange={(e) => setCity(e.target.value)}
+                    onChange={(e) => setQuoteState((s) => ({ ...s, dest: `${e.target.value}, ${destKey}` }))}
                   >
                     {Object.keys(DESTINATIONS[destKey].cities).map((k) => (
                       <option key={k} value={k}>{k}</option>
@@ -402,4 +414,4 @@ function Calculator({ quoteState, setQuoteState }) {
   );
 }
 
-export { Calculator, ROUTES };
+export { Calculator, ROUTES, routeFor };

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { SectionHeader, Placeholder } from "./chrome.jsx";
-import { ROUTES } from "./calculator.jsx";
+import { ROUTES, routeFor } from "./calculator.jsx";
 
 // Pet teaser + animated stats + FAQ accordion + Contact form + Sticky quote widget.
 
@@ -417,7 +417,7 @@ function StickyQuote({ quoteState, scrollToCalc }) {
         <div className="sq-route mono">
           <span>KUL</span>
           <span className="arr">→</span>
-          <span>{(ROUTES[quoteState.dest] || ROUTES["Australia"]).code}</span>
+          <span>{routeFor(quoteState.dest).code}</span>
         </div>
         <div className="sq-meta">
           <span>{quoteState.size}</span>
