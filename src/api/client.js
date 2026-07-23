@@ -245,14 +245,15 @@ export function getSeaPricing(pricingRequest) {
   });
 }
 // Live calculator pricing — APAC split endpoint (SEA only). Volume is sent in
-// CUBIC_FT; the selected city fills destination_port and destination_city.
-export function getApacPricing({ originPort, originCountry, destinationCity, toCountry, volumeM3, containerType, shipmentType, movingType }) {
+// CUBIC_FT. The port can differ from the city (rate-sheet mapping, e.g.
+// Perth ships via Sydney, Malaysia via Port Klang).
+export function getApacPricing({ originPort, originCountry, destinationPort, destinationCity, toCountry, volumeM3, containerType, shipmentType, movingType }) {
   return req("/api/v1/order/get-pricing-with-split-for-apac", {
     method: "POST",
     body: {
       origin_port: originPort,
       origin_country: originCountry,
-      destination_port: destinationCity,
+      destination_port: destinationPort || destinationCity,
       destination_city: destinationCity,
       to_country: toCountry,
       volume: { magnitude: ((Number(volumeM3) || 0) * M3_TO_FT3).toFixed(2), unit: "CUBIC_FT" },

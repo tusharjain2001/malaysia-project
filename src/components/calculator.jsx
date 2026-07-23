@@ -5,31 +5,32 @@ import { getApacPricing, CURRENCY } from "../api/client.js";
 // Live cost & timeline calculator. Sliders + mode selector → live API price + Gantt.
 // Pricing comes from the APAC pricing-with-split endpoint; the timeline stays local.
 
-// Destination = country + city (two dropdowns). The API is queried with the
-// city as destination_port/destination_city and apiCountry as to_country.
+// Destination = country + city (two dropdowns), per the client's rate sheet.
+// Each city carries the PORT the backend prices against — destination_port and
+// destination_city are sent separately (e.g. Perth/Fremantle ship via Sydney,
+// Malaysia via Port Klang). to_country = the country key.
 const DESTINATIONS = {
   "Australia": {
     apiCountry: "Australia",
     cities: {
-      "Brisbane":  { code: "BNE", airDays: [8, 11], seaDays: [22, 32], distanceKm: 6150 },
-      "Melbourne": { code: "MEL", airDays: [8, 11], seaDays: [26, 36], distanceKm: 6300 },
-      "Sydney":    { code: "SYD", airDays: [8, 11], seaDays: [24, 34], distanceKm: 6600 },
+      "Adelaide":  { port: "Adelaide",  code: "ADL", airDays: [8, 11], seaDays: [26, 36], distanceKm: 5400 },
+      "Brisbane":  { port: "Brisbane",  code: "BNE", airDays: [8, 11], seaDays: [22, 32], distanceKm: 6150 },
+      "Fremantle": { port: "Sydney",    code: "FRE", airDays: [8, 11], seaDays: [20, 30], distanceKm: 3900 },
+      "Melbourne": { port: "Melbourne", code: "MEL", airDays: [8, 11], seaDays: [26, 36], distanceKm: 6300 },
+      "Sydney":    { port: "Sydney",    code: "SYD", airDays: [8, 11], seaDays: [24, 34], distanceKm: 6600 },
+      "Perth":     { port: "Sydney",    code: "PER", airDays: [8, 11], seaDays: [20, 30], distanceKm: 3900 },
     },
   },
-  "USA": {
-    apiCountry: "United States",
+  "Singapore": {
+    apiCountry: "Singapore",
     cities: {
-      "New York":      { code: "JFK", airDays: [9, 12], seaDays: [36, 46], distanceKm: 15300 },
-      "San Francisco": { code: "SFO", airDays: [9, 12], seaDays: [26, 36], distanceKm: 13600 },
-      "Washington":    { code: "IAD", airDays: [9, 12], seaDays: [36, 46], distanceKm: 15200 },
+      "Singapore": { port: "Singapore", code: "SIN", airDays: [1, 2], seaDays: [3, 6], distanceKm: 300 },
     },
   },
-  "Germany": {
-    apiCountry: "Germany",
+  "Malaysia": {
+    apiCountry: "Malaysia",
     cities: {
-      "Hamburg":   { code: "HAM", airDays: [9, 12], seaDays: [30, 40], distanceKm: 10300 },
-      "Berlin":    { code: "BER", airDays: [9, 12], seaDays: [30, 40], distanceKm: 9900 },
-      "Stuttgart": { code: "STR", airDays: [9, 12], seaDays: [30, 40], distanceKm: 10200 },
+      "Malaysia": { port: "Port Klang", code: "PKG", airDays: [1, 2], seaDays: [2, 5], distanceKm: 400 },
     },
   },
 };
@@ -51,26 +52,18 @@ const routeFor = (dest) => {
   const { destKey, cityKey } = parseDest(dest);
   return DESTINATIONS[destKey].cities[cityKey];
 };
+// "Singapore"/"Malaysia" have city === country — store the single name, not "Malaysia, Malaysia".
+const destValue = (city, country) => (city === country ? country : `${city}, ${country}`);
 
 // Country-level view kept for the contact form's destination options.
 const ROUTES = Object.fromEntries(
   Object.entries(DESTINATIONS).map(([k, v]) => [k, v.cities[firstCityOf(k)]])
 );
 
-const ORIGIN_CODES = {
-  "Singapore":              { code: "SIN", city: "Singapore" },
-  "Kuala Lumpur, Malaysia": { code: "KUL", city: "Kuala Lumpur" },
-  "Penang, Malaysia":       { code: "PEN", city: "Penang" },
-  "Johor Bahru, Malaysia":  { code: "JHB", city: "Johor Bahru" },
-};
-// The origin field is free text (Google Places) — derive a display code for
-// cities outside the known list.
-const originOf = (s) => {
-  if (ORIGIN_CODES[s]) return ORIGIN_CODES[s];
-  const city = (s || "").split(",")[0].trim();
-  if (!city) return ORIGIN_CODES["Kuala Lumpur, Malaysia"];
-  return { code: city.replace(/[^A-Za-z]/g, "").slice(0, 3).toUpperCase() || "—", city };
-};
+// The calculator's origin is fixed to Malaysia (client request, Jul 2026).
+// Rates are keyed to the port: Port Klang (verified live — "Kuala Lumpur" or
+// "Malaysia" as origin_port return a lower partial price).
+const CALC_ORIGIN = { code: "MYS", city: "Malaysia", port: "Port Klang", country: "Malaysia" };
 
 const MODES = [
   { id: "fcl", label: "Sea — Full container", tag: "Best for full home", speedMul: 1.0,
@@ -145,7 +138,7 @@ function Calculator({ quoteState, setQuoteState }) {
 
   const { destKey, cityKey } = parseDest(quoteState.dest);
   const route = DESTINATIONS[destKey].cities[cityKey];
-  const origin = originOf(quoteState.origin);
+  const origin = CALC_ORIGIN;
   const m = MODES.find((x) => x.id === mode);
 
   // Live pricing from the APAC split endpoint (debounced — the slider fires fast).
@@ -160,11 +153,10 @@ function Calculator({ quoteState, setQuoteState }) {
     setError("");
     const t = setTimeout(async () => {
       try {
-        // The UI shows the Malaysian origin (KUL etc.), but the rate tables only
-        // have Singapore-origin prices — the payload always sends Singapore.
         const res = await getApacPricing({
-          originPort: "Singapore",
-          originCountry: "Singapore",
+          originPort: CALC_ORIGIN.port,
+          originCountry: CALC_ORIGIN.country,
+          destinationPort: route.port,
           destinationCity: cityKey,
           toCountry: DESTINATIONS[destKey].apiCountry,
           volumeM3: volume,
@@ -261,7 +253,7 @@ function Calculator({ quoteState, setQuoteState }) {
                     value={destKey}
                     onChange={(e) => {
                       const c = e.target.value;
-                      setQuoteState((s) => ({ ...s, dest: `${firstCityOf(c)}, ${c}` }));
+                      setQuoteState((s) => ({ ...s, dest: destValue(firstCityOf(c), c) }));
                     }}
                   >
                     {Object.keys(DESTINATIONS).map((k) => (
@@ -274,7 +266,7 @@ function Calculator({ quoteState, setQuoteState }) {
                   <select
                     className="dest-select muted"
                     value={cityKey}
-                    onChange={(e) => setQuoteState((s) => ({ ...s, dest: `${e.target.value}, ${destKey}` }))}
+                    onChange={(e) => setQuoteState((s) => ({ ...s, dest: destValue(e.target.value, destKey) }))}
                   >
                     {Object.keys(DESTINATIONS[destKey].cities).map((k) => (
                       <option key={k} value={k}>{k}</option>

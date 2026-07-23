@@ -284,6 +284,13 @@ function QuoteBand({ values, setValues, scrollToCalc }) {
       setFormError("Please fill in every field so we can prepare your quote.");
       return;
     }
+    // The backend's lead creation 500s (PRO_ERR_008) on a country-only
+    // destination — require "City, Country". City-states like Singapore are OK.
+    const destParts = values.dest.split(",").map((s) => s.trim()).filter(Boolean);
+    if (destParts.length < 2 && destParts[0]?.toLowerCase() !== "singapore") {
+      setFormError('Please choose a specific destination city — e.g. "Sydney, Australia" rather than just "Australia".');
+      return;
+    }
     if (!/^\S+@\S+\.\S+$/.test(values.email.trim())) {
       setFormError("That email address doesn't look right — please check it.");
       return;
