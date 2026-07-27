@@ -281,7 +281,7 @@ function Contact() {
               </div>
               <div className="contact-block">
                 <div className="text-mono-sm">WHATSAPP</div>
-                <div className="mono contact-big">+65 6520 1914</div>
+                <div className="mono contact-big">+60 16‑925 0831</div>
                 <div className="muted" style={{ fontSize: 13 }}>Fastest channel · 7 days</div>
               </div>
             </div>
