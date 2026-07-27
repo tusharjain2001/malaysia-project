@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { BookingFlow } from "./booking-flow.jsx";
+import heroImage from "../assets/heroimage.jpeg";
 import {
   createOrderForPricing,
   confirmRegistration,
@@ -45,12 +46,11 @@ function Hero({ quoteState }) {
 
         <div className="hero-right">
           <div className="hero-visual">
-            <image-slot
-              id="hero-photo"
-              shape="rect"
-              placeholder="Drop a family / moving photo"
-              style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
-            ></image-slot>
+            <img
+              src={heroImage}
+              alt="Family preparing for an international move"
+              style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+            />
             <div className="hero-visual-meta">
               <span><i />LIVE TRACKING</span>
               <span>KUL → SYD</span>

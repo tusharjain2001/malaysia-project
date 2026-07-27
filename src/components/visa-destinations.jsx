@@ -1,5 +1,13 @@
 import React, { useState } from "react";
 import { SectionHeader, Placeholder } from "./chrome.jsx";
+import sydneyPhoto from "../assets/sydney.jpeg";
+import londonPhoto from "../assets/london.jpeg";
+import singaporePhoto from "../assets/singapore.jpeg";
+import torontoPhoto from "../assets/toronto.jpeg";
+import sanFranciscoPhoto from "../assets/sanfrancisco.jpeg";
+import melbournePhoto from "../assets/melbourne.jpeg";
+import dubaiPhoto from "../assets/dubai.jpeg";
+import aucklandPhoto from "../assets/auckland.jpeg";
 
 // Visa option comparison cards (filterable) + Popular destinations for Malaysians (clickable cards with details).
 
@@ -166,6 +174,7 @@ const DEST = [
     city: "Sydney",
     state: "New South Wales, Australia",
     code: "SYD",
+    photo: sydneyPhoto,
     coord: { x: 88, y: 60 },
     transit: "24–34 days",
     air: "8–11 days",
@@ -181,6 +190,7 @@ const DEST = [
     city: "London",
     state: "England, United Kingdom",
     code: "LHR",
+    photo: londonPhoto,
     coord: { x: 46, y: 22 },
     transit: "35–45 days",
     air: "9–12 days",
@@ -196,6 +206,7 @@ const DEST = [
     city: "Singapore",
     state: "Singapore",
     code: "SIN",
+    photo: singaporePhoto,
     coord: { x: 66, y: 52 },
     transit: "7–12 days",
     air: "2–4 days",
@@ -211,6 +222,7 @@ const DEST = [
     city: "Toronto",
     state: "Ontario, Canada",
     code: "YYZ",
+    photo: torontoPhoto,
     coord: { x: 24, y: 24 },
     transit: "38–48 days",
     air: "10–13 days",
@@ -226,6 +238,7 @@ const DEST = [
     city: "San Francisco",
     state: "California, USA",
     code: "SFO",
+    photo: sanFranciscoPhoto,
     coord: { x: 10, y: 40 },
     transit: "26–36 days",
     air: "9–12 days",
@@ -241,6 +254,7 @@ const DEST = [
     city: "Melbourne",
     state: "Victoria, Australia",
     code: "MEL",
+    photo: melbournePhoto,
     coord: { x: 84, y: 64 },
     transit: "24–34 days",
     air: "8–11 days",
@@ -256,6 +270,7 @@ const DEST = [
     city: "Dubai",
     state: "Dubai, United Arab Emirates",
     code: "DXB",
+    photo: dubaiPhoto,
     coord: { x: 57, y: 38 },
     transit: "18–28 days",
     air: "5–7 days",
@@ -271,6 +286,7 @@ const DEST = [
     city: "Auckland",
     state: "Auckland, New Zealand",
     code: "AKL",
+    photo: aucklandPhoto,
     coord: { x: 93, y: 63 },
     transit: "28–38 days",
     air: "8–10 days",
@@ -360,11 +376,8 @@ function Destinations() {
 
           <div className="dest-detail">
             <div className="dest-photo">
-              <Placeholder
-                ratio="wide"
-                corner={`KUL→${d.code}`}
-                label={`Editorial photo · ${d.city} skyline`}
-              />
+              <img src={d.photo} alt={`${d.city} skyline`} loading="lazy" />
+              <span className="dest-photo-corner mono">KUL→{d.code}</span>
             </div>
             <div className="dest-detail-body card">
               <div className="between">

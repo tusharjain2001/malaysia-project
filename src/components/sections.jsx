@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { SectionHeader, Placeholder } from "./chrome.jsx";
+import petPhoto from "../assets/petrelocation.jpeg";
 import { ROUTES, routeFor } from "./calculator.jsx";
 
 // Pet teaser + animated stats + FAQ accordion + Contact form + Sticky quote widget.
@@ -70,7 +71,7 @@ function PetTeaser() {
             </div>
           </div>
           <div className="pet-right">
-            <Placeholder ratio="photo" corner="IATA·CR82" label="Pet relocation editorial photo" />
+            <img className="pet-photo" src={petPhoto} alt="Pet relocation — safe international travel for pets" />
             <div className="pet-badge">
               <div className="mono text-mono-sm">EST. PET MOVE</div>
               <div className="mono" style={{ fontSize: 32, letterSpacing: "-0.02em" }}>RM 9,200</div>

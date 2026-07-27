@@ -1,5 +1,9 @@
 import React from "react";
-import { SectionHeader, Placeholder } from "./chrome.jsx";
+import { SectionHeader } from "./chrome.jsx";
+import guidePhoto from "../assets/guide.jpeg";
+import checklistPhoto from "../assets/checklist.jpeg";
+import livingAbroadPhoto from "../assets/living abroad.jpeg";
+import customsPhoto from "../assets/customs.jpeg";
 
 // Blog teaser section — 4 article cards linking out. Sits before the Footer.
 
@@ -7,6 +11,7 @@ const BLOG_POSTS = [
   {
     tag: "Budgeting",
     corner: "GUIDE",
+    photo: guidePhoto,
     title: "How much does it really cost to move from Malaysia to Australia in 2026?",
     excerpt:
       "A full breakdown of freight, customs, insurance, and hidden fees for a household move from Kuala Lumpur to Sydney — with real RM figures.",
@@ -15,6 +20,7 @@ const BLOG_POSTS = [
   {
     tag: "Packing",
     corner: "CHECKLIST",
+    photo: checklistPhoto,
     title: "The export-grade packing checklist we use for every household move",
     excerpt:
       "What our crews crate first, how fragile items and pianos are protected for weeks at sea, and what you should pack yourself.",
@@ -23,6 +29,7 @@ const BLOG_POSTS = [
   {
     tag: "Settling in",
     corner: "LIVING ABROAD",
+    photo: livingAbroadPhoto,
     title: "First 30 days in London: banking, GP registration, and school enrolment",
     excerpt:
       "The paperwork order that actually works — from opening a UK bank account to registering with a GP and enrolling your kids in school.",
@@ -31,6 +38,7 @@ const BLOG_POSTS = [
   {
     tag: "Packing",
     corner: "CUSTOMS",
+    photo: customsPhoto,
     title: "What you can't ship: the restricted items list for 5 countries",
     excerpt:
       "Alcohol, plant materials, lithium batteries and more — a country-by-country guide to what customs will stop at the border.",
@@ -51,7 +59,10 @@ function Blog() {
         <div className="blog-grid mt-48">
           {BLOG_POSTS.map((p, i) => (
             <a key={i} className="blog-card card" href="#">
-              <Placeholder ratio="wide" corner={p.corner} label="Editorial photo" />
+              <div className="blog-card-media">
+                <img src={p.photo} alt={p.title} loading="lazy" />
+                <span className="blog-card-corner mono">○ {p.corner}</span>
+              </div>
               <div className="blog-card-body">
                 <div className="chip">{p.tag}</div>
                 <h3 className="h3 mt-16">{p.title}</h3>
