@@ -224,10 +224,9 @@ function CityAutocomplete({ value, onChange }) {
     let cancelled = false;
     loadGoogleMaps().then((g) => {
       if (cancelled || !g || !g.maps?.places?.Autocomplete || !inputRef.current) return;
-      // "(regions)" covers cities AND countries/states — searching "malaysia"
-      // offers Malaysia itself, "sydney" offers the city.
+      // No type restriction (client request) — cities, states, countries,
+      // addresses, anything Google suggests is selectable.
       const ac = new g.maps.places.Autocomplete(inputRef.current, {
-        types: ["(regions)"],
         fields: ["address_components", "name"],
       });
       ac.addListener("place_changed", () => {
