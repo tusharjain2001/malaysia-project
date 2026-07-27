@@ -376,7 +376,7 @@ function Destinations() {
 
           <div className="dest-detail">
             <div className="dest-photo">
-              <img src={d.photo} alt={`${d.city} skyline`} loading="lazy" />
+              <img src={d.photo} alt={`${d.city}, ${d.state} — popular destination for international moves from Malaysia`} loading="lazy" />
               <span className="dest-photo-corner mono">KUL→{d.code}</span>
             </div>
             <div className="dest-detail-body card">

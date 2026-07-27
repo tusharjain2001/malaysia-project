@@ -60,7 +60,7 @@ function Blog() {
           {BLOG_POSTS.map((p, i) => (
             <a key={i} className="blog-card card" href="#">
               <div className="blog-card-media">
-                <img src={p.photo} alt={p.title} loading="lazy" />
+                <img src={p.photo} alt={`${p.corner.toLowerCase()} — ${p.title}`} loading="lazy" />
                 <span className="blog-card-corner mono">○ {p.corner}</span>
               </div>
               <div className="blog-card-body">

@@ -71,7 +71,7 @@ function PetTeaser() {
             </div>
           </div>
           <div className="pet-right">
-            <img className="pet-photo" src={petPhoto} alt="Pet relocation — safe international travel for pets" />
+            <img className="pet-photo" src={petPhoto} alt="Pet relocation services from Malaysia — safe international travel for dogs, cats and other pets" />
             <div className="pet-badge">
               <div className="mono text-mono-sm">EST. PET MOVE</div>
               <div className="mono" style={{ fontSize: 32, letterSpacing: "-0.02em" }}>RM 9,200</div>

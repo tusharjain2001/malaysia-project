@@ -48,7 +48,7 @@ function Hero({ quoteState }) {
           <div className="hero-visual">
             <img
               src={heroImage}
-              alt="Family preparing for an international move"
+              alt="APAC Relocation — professional international movers helping a family relocate from Malaysia"
               style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
             />
             <div className="hero-visual-meta">
